@@ -4,7 +4,7 @@ A Fluent Statemachine engine for .NET
 
 Example - A Machine Builder.
 
-    A builder is a class that is used to produce a StateMachineDefinition.
+A builder is a class that is used to produce a StateMachineDefinition.
 
     public class SlowFastStoppedStateMachineBuilder : MachineBuilder<SlowFastStoppedInternalState>
     {
@@ -99,13 +99,13 @@ Example - A Machine Builder.
         }
     }
     
-    Example 2 - Using a Machine builder to get a StateMachine running.
-    
-    The MachineRunner is the engine that drives a state machine - it need two things:
-        * A MachineState
-        * A MachineDefintion
+Example 2 - Using a Machine builder to get a StateMachine running.
+
+The MachineRunner is the engine that drives a state machine - it need two things:
+    * A MachineState
+    * A MachineDefintion
         
-    Luckily, these can be generated using a StateMachineBuilder.
+Luckily, these can be generated using a StateMachineBuilder.
     
         SlowFastStoppedStateMachineBuilder machine = new SlowFastStoppedStateMachineBuilder();
         
