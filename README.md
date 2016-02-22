@@ -2,7 +2,7 @@
 
 A Fluent Statemachine engine for .NET
 
-== Example - A Machine Builder. ==
+<h1> Example - A Machine Builder</h1>
 
 A builder is a class that is used to produce a StateMachineDefinition.
 
