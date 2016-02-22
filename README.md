@@ -102,8 +102,10 @@ A builder is a class that is used to produce a StateMachineDefinition.
 <h3>Example 2 - Using a Machine builder to get a StateMachine running.</h3>
 
 The MachineRunner is the engine that drives a state machine - it need two things:
-    * A MachineState
-    * A MachineDefintion
+<ul>
+    <li>A MachineState</li>
+    <li>A MachineDefintion</li>
+</ul>
         
 Luckily, these can be generated using a StateMachineBuilder.
     
