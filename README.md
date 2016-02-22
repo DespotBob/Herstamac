@@ -128,7 +128,7 @@ Luckily, these can be generated using a StateMachineBuilder.
                 /* Define a function that will be used to serialise an event to a string */
                 config.LogEventWith(x => x.ToString());
                 
-                /* Hmmm - Every state machine needs a unique Id - Get this one from here */
+                /* Hmmm - Every state machine needs a unique Id - Get this one from here, otherwise it's a GUID! */
                 config.UniqueId.FromProperty(p => p.Id);
             });
 
@@ -141,3 +141,21 @@ Now we have all three things - Let's jam them into a MachineRunner, and dispatch
         Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefinition, machine.Stopped));
     
     
+<h3>Example - Log output </h3>
+
+    SM:FastSlow - Registered state: 'Stopped', with 3 Handlers
+    SM:FastSlow - Registered state: 'Slow', with 4 Handlers
+    SM:FastSlow - Registered state: 'Fast', with 3 Handlers
+    SM:FastSlow - Registered state: 'Stopped', with 3 Handlers
+    Rx'd Event: GoFaster
+    Rx'd Event2: GoFaster
+    SM:FastSlow:096a055a-fcab-4e8f-ab9f-41f31d93661b = Transition: Stopped -> Slow on ^GoFaster = 'Herstamac.Test.SlowFastStopped.SlowFastStoppedStateMachineBuilder+GoFaster'
+    Rx'd Event: ExitEvent
+    Rx'd Event2: ExitEvent
+    Exiting Stopped!
+    Rx'd Event: EntryEvent
+    Rx'd Event2: EntryEvent
+
+
+
+
