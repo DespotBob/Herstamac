@@ -108,7 +108,8 @@ The MachineRunner is the engine that drives a state machine - it need two things
 </ul>
         
 Luckily, these can be generated using a StateMachineBuilder.
-    
+
+        
         SlowFastStoppedStateMachineBuilder machine = new SlowFastStoppedStateMachineBuilder();
         
         machine.AddEventInterceptor((evnt) =>
@@ -135,6 +136,8 @@ Luckily, these can be generated using a StateMachineBuilder.
             });
 
 The MachineBuilder is also used to produce a MachineState
+
+        //
         MachineState = machine.NewMachineState(new SlowFastStoppedInternalState());
         
 Now we have all three things - Let's jam them into a MachineRunner, and dispatch an event into the state machine.
