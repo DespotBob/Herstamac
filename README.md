@@ -72,7 +72,7 @@ A builder is a class that is used to produce a StateMachineDefinition.
                 .Then((s,e) => Console.WriteLine( "Told to go slower"))
                 .TransitionTo(Stopped);
 
-            /* Whoops - looks like someone added some silly guard clauses - real ones 
+            /* Whoops - looks like someone added some silly guard clauses - real ones would be meaningful */
             InState(Slow)
                 .When<GoStop>()
                 .WithGuard( (s,e) => true )
