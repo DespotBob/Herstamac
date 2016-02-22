@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Herstamac", "Herstamac\Herstamac.csproj", "{EA0F68E3-3BE9-406C-9094-68AB3767556A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Herstamac.Test", "Herstamac.Test\Herstamac.Test.csproj", "{672F2DF2-EDBA-4CDF-9F28-A1DE85A87E80}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://herosystemsdevelopment.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Herstamac.Test\\Herstamac.Test.csproj
+		SccProjectName1 = Herstamac.Test
+		SccLocalPath1 = Herstamac.Test
+		SccProjectUniqueName2 = Herstamac\\Herstamac.csproj
+		SccProjectName2 = Herstamac
+		SccLocalPath2 = Herstamac
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA0F68E3-3BE9-406C-9094-68AB3767556A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA0F68E3-3BE9-406C-9094-68AB3767556A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA0F68E3-3BE9-406C-9094-68AB3767556A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA0F68E3-3BE9-406C-9094-68AB3767556A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{672F2DF2-EDBA-4CDF-9F28-A1DE85A87E80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{672F2DF2-EDBA-4CDF-9F28-A1DE85A87E80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{672F2DF2-EDBA-4CDF-9F28-A1DE85A87E80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{672F2DF2-EDBA-4CDF-9F28-A1DE85A87E80}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
