@@ -165,7 +165,7 @@ Now we have all three things - Let's jam them into a MachineRunner, and dispatch
 	Rx'd Event2: EntryEvent
 	SM:FastSlow:827d132b-b371-4793-a1fd-df649cb34014 = State: Stopped - Entered log in the stopped state!
 
-<em>Note:</em> A Guid has been used to identfify this statemachine in the logs, because no unique identifier was specified. If you don't like Guids, specify something else to be used in is place.
+<strong>Note:</strong><em> A Guid has been used to identfify this statemachine in the logs, because no unique identifier was specified. If you don't like Guids, specify something else to be used in is place.</em>
 
 <h3>Using Event Interceptor</h3>
 
