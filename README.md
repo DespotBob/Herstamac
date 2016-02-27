@@ -1,6 +1,6 @@
 # Herstamac
 
-A Fluent Statemachine engine for .NET
+A Statemachine engine for .NET, with a fluent api for constructing a StateMachine definition.
 
 <h3> Example - A Machine Builder</h3>
 
@@ -8,7 +8,7 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
 
     public class SlowFastStoppedStateMachineBuilder : MachineBuilder<SlowFastStoppedInternalState>
     {
-        /* Create some states to use in our state machine - The names are the most important thing really. */
+        /* Create some states to use in our state machine - The names are the most important thing really. There here inside this builder - just cos */
         public State<SlowFastStoppedInternalState> Moving = NewState("Moving");
         public State<SlowFastStoppedInternalState> Slow = NewState("Slow");
         public State<SlowFastStoppedInternalState> Fast = NewState("Fast");
@@ -31,9 +31,6 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
             RegisterParentStateFor(Slow, () => Moving);
             RegisterParentStateFor(Fast, () => Moving);
 
-            /* Every time the StateMachine transitions - log it using this method */
-            AddTransitionLog((x) => Console.WriteLine(x));
-
             /* Use a style of fluent api to define your behaviour */
             
             /* Some code that runs when the Stopped state is entered */
@@ -47,8 +44,8 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
             /* Some code that runs when the Stopped state is exited */
             InState(Stopped)
                 .OnExit()
-                .Then((state, @event) =>
-                    Console.WriteLine("Exiting Stopped!");
+                .Then((state, @event, log ) =>
+                    log("Log a string with specii ")
                 });
 
             /* In the stopped state, when a GoFasterEvent arrives - transition to the slow state */
@@ -58,7 +55,8 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
 
             InState(Slow)
                 .OnExit()
-                .Then((state, @event) => {
+                .Then((state, @event) => 
+				{
                     Console.WriteLine("Exiting Slow!");
                 });
 
@@ -83,7 +81,10 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
             InState(Slow)
                 .When<GoStop>()
                 .WithGuard((s, e) => false)
-                .Then(() => { throw new ApplicationException("This will not be called, as the guard condition is always false"); } );
+                .Then(() => 
+				{ 
+					throw new ApplicationException("This will not be called, as the guard condition is always false"); 
+				});
 
             InState(Fast)
                 .When<GoSlower>()
@@ -112,13 +113,6 @@ Luckily, these can be generated using a StateMachineBuilder.
         
         SlowFastStoppedStateMachineBuilder machine = new SlowFastStoppedStateMachineBuilder();
         
-        machine.AddEventInterceptor((evnt) =>
-        {
-            /* Demonstrate a Simple Event Interceptor - This one just logs the event */
-            Console.WriteLine("Rx'd Event: {0}", evnt.GetType().Name);
-            return evnt;
-        });
-
         /* Now use the machineBuilder to produce a MachineDefinition */
         MachineDefinition<SlowFastStoppedInternalState> MachineDefinition =  machine.GetMachineDefinition( config => 
             {
@@ -148,19 +142,60 @@ Now we have all three things - Let's jam them into a MachineRunner, and dispatch
     
 <h3>Example - Log output </h3>
 
-    SM:FastSlow - Registered state: 'Stopped', with 3 Handlers
-    SM:FastSlow - Registered state: 'Slow', with 4 Handlers
-    SM:FastSlow - Registered state: 'Fast', with 3 Handlers
-    SM:FastSlow - Registered state: 'Stopped', with 3 Handlers
-    Rx'd Event: GoFaster
-    Rx'd Event2: GoFaster
-    SM:FastSlow:096a055a-fcab-4e8f-ab9f-41f31d93661b = Transition: Stopped -> Slow on ^GoFaster = 'Herstamac.Test.SlowFastStopped.SlowFastStoppedStateMachineBuilder+GoFaster'
-    Rx'd Event: ExitEvent
-    Rx'd Event2: ExitEvent
-    Exiting Stopped!
-    Rx'd Event: EntryEvent
-    Rx'd Event2: EntryEvent
+	SM:FastSlow - Registered state: 'Stopped', with 3 Handlers
+	SM:FastSlow - Registered state: 'Slow', with 4 Handlers
+	SM:FastSlow - Registered state: 'Fast', with 3 Handlers
+	SM:FastSlow - Registered state: 'Stopped', with 3 Handlers
+	Rx'd Event: GoFaster
+	Rx'd Event2: GoFaster
+	SM:FastSlow:bdd369d3-7ea0-41ab-96fb-2aa895ceec69 = State: Stopped -> Slow on ^GoFaster = 'Herstamac.Test.SlowFastStopped.SlowFastStoppedStateMachineBuilder+GoFaster'
+	Rx'd Event: ExitEvent
+	Rx'd Event2: ExitEvent
+	Exiting Stopped!
+	Rx'd Event: EntryEvent
+	Rx'd Event2: EntryEvent
+	Rx'd Event: GoStop
+	Rx'd Event2: GoStop
+	SM:FastSlow:bdd369d3-7ea0-41ab-96fb-2aa895ceec69 = State: Slow -> Stopped on ^GoStop = 'Herstamac.Test.SlowFastStopped.SlowFastStoppedStateMachineBuilder+GoStop'
+	Rx'd Event: ExitEvent
+	Rx'd Event2: ExitEvent
+	Entering Slow!
+	Rx'd Event: EntryEvent
+	Rx'd Event2: EntryEvent
+	SM:FastSlow:bdd369d3-7ea0-41ab-96fb-2aa895ceec69 = State: Stopped - Entered log in the stopped state!
 
+	<em>Note:</em> A Guid has been used to identfify this statemachine in the logs, because no unique identifier was specified. If you don't like Guids, specify something else to be used in is place.
 
+<h3>Using Event Interceptor</h3>
+
+Invent Interceptors can be added to a statemachine. These are run before any event is dispatched to the statemachine.
+
+        SlowFastStoppedStateMachineBuilder machine = new SlowFastStoppedStateMachineBuilder();
+        
+		/* Demonstrate a Simple Event Interceptor - This one just logs the event */
+        machine.AddEventInterceptor((evnt) =>
+        {
+            Console.WriteLine("Rx'd Event: {0}", evnt.GetType().Name);
+            return evnt;
+        });
+
+		/* Returning null causes the event to be discarded before use. */
+		machine.AddEventInterceptor((evnt) =>
+        {
+            if( /* business logic */ true ) 
+			{
+				return null;
+			} 
+			else
+			{
+				return evnt;
+			}
+        });
+
+		/* Returning a completely different event is just as acceptable.. */
+		machine.AddEventInterceptor((evnt) =>
+        {
+            return new JimBobBoab();
+        });
 
 

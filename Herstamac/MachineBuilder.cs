@@ -128,8 +128,6 @@ namespace Herstamac
 
         private readonly List<Func<object, object>> EventInterceptors;
 
-        private Action<string> _log = (x) => { } ;
-
         public MachineBuilder() : base()
         {
             EventInterceptors = new List<Func<object, object>>();
@@ -173,7 +171,6 @@ namespace Herstamac
 
             if (_MachineState.CurrentState == null || Misc<TInternalState>.FindAllStates(this.parentStates, _MachineState.CurrentState).Count == 0)
             {
-                Log( "Set Initial State: '{0}'", stateToBuildWith.Name);
                 _MachineState.ChangeState(stateToBuildWith);
             }
 
@@ -231,16 +228,6 @@ namespace Herstamac
             EventInterceptors.Add(interceptor);
         }
 
-        public void AddTransitionLog(Action<string> log)
-        {
-            if (log == null)
-            {
-                throw new ArgumentNullException("log", "Cannot attach a null as a transition logger!");
-            }
-
-            _log = log;
-        }
-
         public MachineDefinition<TInternalState> GetMachineDefinition()
         {
             return new MachineDefinition<TInternalState>(RegisteredState, parentStates, EventInterceptors, new MachineConfiguration<TInternalState>() );
@@ -265,11 +252,6 @@ namespace Herstamac
         public static State<TInternalState> NewState(string name)
         {
             return new State<TInternalState>(name);
-        }
-
-        private void Log(string format, params object[] args)
-        {
-            _log(string.Format(format, args));
         }
     } 
 }

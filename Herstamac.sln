@@ -1,25 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Herstamac", "Herstamac\Herstamac.csproj", "{EA0F68E3-3BE9-406C-9094-68AB3767556A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Herstamac.Test", "Herstamac.Test\Herstamac.Test.csproj", "{672F2DF2-EDBA-4CDF-9F28-A1DE85A87E80}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{CD8C5C79-E13E-4A69-8778-F2EAC0D06569}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 3
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://herosystemsdevelopment.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Herstamac.Test\\Herstamac.Test.csproj
-		SccProjectName1 = Herstamac.Test
-		SccLocalPath1 = Herstamac.Test
-		SccProjectUniqueName2 = Herstamac\\Herstamac.csproj
-		SccProjectName2 = Herstamac
-		SccLocalPath2 = Herstamac
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

@@ -41,7 +41,6 @@ namespace Herstamac.Test.MultipleEvents
                 .When<TelephoneCall>()
                 .Then((state, evnt) => Console.WriteLine("I cannae go nae faster..."));
 
-            AddTransitionLog((x) => Console.WriteLine(x));
         }
     }
 }
