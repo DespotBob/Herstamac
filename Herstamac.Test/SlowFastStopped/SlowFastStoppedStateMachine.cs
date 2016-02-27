@@ -26,8 +26,9 @@ namespace Herstamac.Test.SlowFastStopped
 
             InState(Stopped)
                 .OnEntry()
-                .Then((s, e) =>
+                .Then((s, e, log) =>
                 {
+                    log("Entered log in the stopped state!");
                     Console.WriteLine("Entering Stoppped!");
                 });
 

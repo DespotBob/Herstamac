@@ -25,13 +25,20 @@ namespace Herstamac
 
         public TransitionBuilder<TInternalState, TEvent> Then(Action handler)
         {
-            TD.Action = (state, obj) => handler();
+            TD.Action = (state, obj, log) => handler();
+
             return new TransitionBuilder<TInternalState, TEvent>(TD);
         }
 
         public TransitionBuilder<TInternalState, TEvent> Then(Action<TInternalState, TEvent> action)
         {
-            TD.Action = (state, obj) => action(state, (TEvent)obj);
+            TD.Action = (state, obj, log) => action(state, (TEvent)obj);
+            return new TransitionBuilder<TInternalState, TEvent>(TD);
+        }
+
+        public TransitionBuilder<TInternalState, TEvent> Then(Action<TInternalState, TEvent, Action<string>> action)
+        {
+            TD.Action = (state, obj, log) => action(state, (TEvent)obj, log);
             return new TransitionBuilder<TInternalState, TEvent>(TD);
         }
     }

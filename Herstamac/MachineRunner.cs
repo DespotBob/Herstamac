@@ -45,7 +45,7 @@ namespace Herstamac
                 currentStates.Reverse();
             }
 
-            var nextState = DispatchToStates<TInternalState, TEvent>(evnt, internalState, currentStates, eventInterceptors);
+            var nextState = DispatchToStates<TInternalState, TEvent>(evnt, internalState, currentStates, eventInterceptors, config);
 
             if (nextState != null && nextState != currentStates.Last())
             {
@@ -67,7 +67,7 @@ namespace Herstamac
            , bool exitInnerStatesFirst
            , MachineConfiguration<TInternalState>  config)
         {
-            config.Logger(string.Format("SM:{0}:{1} = Transition: {2} -> {3} on ^{4} = '{5}'"
+            config.Logger(string.Format("SM:{0}:{1} = State: {2} -> {3} on ^{4} = '{5}'"
                 , config.Name
                 , config.GetUniqueId(machineState.CurrentInternalState)
                 , machineState.CurrentState.Name
@@ -95,12 +95,12 @@ namespace Herstamac
             }
 
             // Dispath and do not transition...
-            var newState = DispatchToStates(new Herstamac.Events.ExitEvent(), machineState, exitConditionsToRun, eventInterceptors);
+            var newState = DispatchToStates(new Events.ExitEvent(), machineState, exitConditionsToRun, eventInterceptors, config);
 
             machineState.ChangeState(_nextStates.Last());
 
             // Dispath entry event - transition if neccesary  and do not transition...
-            newState = DispatchToStates(new Herstamac.Events.EntryEvent(), machineState, entryConditionsToRun, eventInterceptors);
+            newState = DispatchToStates(new Herstamac.Events.EntryEvent(), machineState, entryConditionsToRun, eventInterceptors, config);
             if (newState != null)
             {
                 transitionToState = TransitionTo(evnt, machineState, relations, newState, eventInterceptors, exitInnerStatesFirst, config);
@@ -143,10 +143,10 @@ namespace Herstamac
         private static State<TInternalState> DispatchToStates<TInternalState, TEvent>(TEvent evnt
             , IMachineState<TInternalState> internalState
             , IEnumerable<State<TInternalState>> statesToDispatchTo
-            , IEnumerable<Func<object, object>> eventInterceptors)
+            , IEnumerable<Func<object, object>> eventInterceptors
+            , MachineConfiguration<TInternalState> config)
             where TEvent : Event
         {
-
             TEvent evntToDispatch = ExecuteInterceptorsForEvent<TEvent>(evnt, eventInterceptors);
 
             if (evntToDispatch == null)
@@ -162,13 +162,19 @@ namespace Herstamac
                 {
                     var handler = currentState._handlers[evnt.GetType()];
 
+                    Action<string> log = str => config.Logger(string.Format("SM:{0}:{1} = State: {2} - {3}"
+                        , config.Name
+                        , config.GetUniqueId(internalState.CurrentInternalState)
+                        , currentState.Name
+                        , str));
+
                     foreach (var action in handler.TransistionDefinitions)
                     {
                         if (action.GuardCondition(internalState.CurrentInternalState, evnt))
                         {
                             if (action.Action != null)
                             {
-                                action.Action(internalState.CurrentInternalState, evnt);
+                                action.Action(internalState.CurrentInternalState, evnt, log );
                             }
 
                             if (action.TransitionTo != null)
@@ -184,6 +190,7 @@ namespace Herstamac
 
             return finalTransitionState;
         }
+
 
         private static State<TInternalState> DispatchToStateViaReflection<TInternalState, T>(T evnt, TInternalState internalState, State<TInternalState> currentState)
             where T : Event
