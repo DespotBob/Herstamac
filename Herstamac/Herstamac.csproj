@@ -54,7 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="TransitionBuilderWithGuard.cs" />
+    <Compile Include="ITransitionBuilderFluentInterfaces.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EntryEvent.cs" />
     <Compile Include="TransitionBuilder.cs" />
@@ -70,7 +70,6 @@
     <Compile Include="State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StateBuilder.cs" />
-    <Compile Include="TransitionBuilderWithTransition.cs" />
     <Compile Include="TransitionDefinition.cs" />
   </ItemGroup>
   <Choose>
