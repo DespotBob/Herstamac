@@ -45,7 +45,7 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
             InState(Stopped)
                 .OnExit()
                 .Then((state, @event, log ) =>
-                    log("Log a string with specii ")
+                    log("Log something - This can be identified easily in the logs..")
                 });
 
             /* In the stopped state, when a GoFasterEvent arrives - transition to the slow state */
@@ -142,29 +142,30 @@ Now we have all three things - Let's jam them into a MachineRunner, and dispatch
     
 <h3>Example - Log output </h3>
 
+	
 	SM:FastSlow - Registered state: 'Stopped', with 3 Handlers
 	SM:FastSlow - Registered state: 'Slow', with 4 Handlers
 	SM:FastSlow - Registered state: 'Fast', with 3 Handlers
 	SM:FastSlow - Registered state: 'Stopped', with 3 Handlers
 	Rx'd Event: GoFaster
 	Rx'd Event2: GoFaster
-	SM:FastSlow:bdd369d3-7ea0-41ab-96fb-2aa895ceec69 = State: Stopped -> Slow on ^GoFaster = 'Herstamac.Test.SlowFastStopped.SlowFastStoppedStateMachineBuilder+GoFaster'
+	SM:FastSlow:827d132b-b371-4793-a1fd-df649cb34014 = State: Stopped -> Slow on ^GoFaster = 'Herstamac.Test.SlowFastStopped.SlowFastStoppedStateMachineBuilder+GoFaster'
 	Rx'd Event: ExitEvent
 	Rx'd Event2: ExitEvent
-	Exiting Stopped!
+	SM:FastSlow:827d132b-b371-4793-a1fd-df649cb34014 = State: Stopped - Log something - This can be identified easily in the logs..
 	Rx'd Event: EntryEvent
 	Rx'd Event2: EntryEvent
 	Rx'd Event: GoStop
 	Rx'd Event2: GoStop
-	SM:FastSlow:bdd369d3-7ea0-41ab-96fb-2aa895ceec69 = State: Slow -> Stopped on ^GoStop = 'Herstamac.Test.SlowFastStopped.SlowFastStoppedStateMachineBuilder+GoStop'
+	SM:FastSlow:827d132b-b371-4793-a1fd-df649cb34014 = State: Slow -> Stopped on ^GoStop = 'Herstamac.Test.SlowFastStopped.SlowFastStoppedStateMachineBuilder+GoStop'
 	Rx'd Event: ExitEvent
 	Rx'd Event2: ExitEvent
 	Entering Slow!
 	Rx'd Event: EntryEvent
 	Rx'd Event2: EntryEvent
-	SM:FastSlow:bdd369d3-7ea0-41ab-96fb-2aa895ceec69 = State: Stopped - Entered log in the stopped state!
+	SM:FastSlow:827d132b-b371-4793-a1fd-df649cb34014 = State: Stopped - Entered log in the stopped state!
 
-	<em>Note:</em> A Guid has been used to identfify this statemachine in the logs, because no unique identifier was specified. If you don't like Guids, specify something else to be used in is place.
+<em>Note:</em> A Guid has been used to identfify this statemachine in the logs, because no unique identifier was specified. If you don't like Guids, specify something else to be used in is place.
 
 <h3>Using Event Interceptor</h3>
 

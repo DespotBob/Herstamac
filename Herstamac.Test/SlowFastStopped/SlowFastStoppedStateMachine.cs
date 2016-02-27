@@ -44,8 +44,8 @@ namespace Herstamac.Test.SlowFastStopped
             /* Some code that runs when the Stopped state is exited */
             InState(Stopped)
                 .OnExit()
-                .Then((state, @event) => {
-                    Console.WriteLine("Exiting Stopped!");
+                .Then((state, @event, log) => {
+                    log("Log something - This can be identified easily in the logs..");
                 });
 
             /* In the stopped state, when a GoFasterEvent arrives - transition to the slow state */
