@@ -110,9 +110,12 @@ The MachineRunner is the engine that drives a state machine - it need two things
         
 Luckily, these can be generated using a StateMachineBuilder.
 
-        
-        SlowFastStoppedStateMachineBuilder machine = new SlowFastStoppedStateMachineBuilder();
-        
+        var machine = new SlowFastStoppedStateMachineBuilder();
+		var machineStates = machine.NewMachineState(new SlowFastStoppedInternalState());
+        var MachineDefinition =  machine.GetMachineDefinition();
+
+You can use the config action when calling GetMachineDefinition():
+
         /* Now use the machineBuilder to produce a MachineDefinition */
         MachineDefinition<SlowFastStoppedInternalState> MachineDefinition =  machine.GetMachineDefinition( config => 
             {
@@ -167,7 +170,7 @@ Now we have all three things - Let's jam them into a MachineRunner, and dispatch
 
 <strong>Note:</strong><em> A Guid has been used to identfify this statemachine in the logs, because no unique identifier was specified. If you don't like Guids, specify something else to be used in is place.</em>
 
-<h3>Using Event Interceptor</h3>
+<h3>Using Event Interceptors</h3>
 
 Invent Interceptors can be added to a statemachine. These are run before any event is dispatched to the statemachine.
 
