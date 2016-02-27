@@ -77,7 +77,7 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
                 .Then()
                 .TransitionTo(Stopped);
                 
-            /* A Good thing this Guard condition is in place ! */
+            /* A Good thing this Guard condition is in place - this guard condition stops the exception from being thrown. */
             InState(Slow)
                 .When<GoStop>()
                 .WithGuard((s, e) => false)
