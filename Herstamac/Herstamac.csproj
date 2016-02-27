@@ -54,6 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="IState.cs" />
     <Compile Include="ITransitionBuilderFluentInterfaces.cs" />
     <Compile Include="Events\Event.cs" />
     <Compile Include="Events\EntryEvent.cs" />

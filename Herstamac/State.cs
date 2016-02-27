@@ -5,11 +5,7 @@ using System.Linq;
 
 namespace Herstamac
 {
-    public interface IState<TInternalState>
-    {
-        string Name { get; }
-        Dictionary<Type, State<TInternalState>.ListOfHandlers> Handlers {get;}
-    }
+
 
     [DebuggerDisplay("State = {Name}")]
     public class State<TInternalState> : IState<TInternalState>
@@ -79,6 +75,5 @@ namespace Herstamac
 
             return transDefinition;
         }
-
     }
 }

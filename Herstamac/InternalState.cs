@@ -60,7 +60,7 @@ namespace Herstamac
             _currentState = newState;
         }
 
-        void  IMachineState<TInternalState>.AddInitialHistory(State<TInternalState> parentState, State<TInternalState> initialState)
+        void IMachineState<TInternalState>.AddInitialHistory(State<TInternalState> parentState, State<TInternalState> initialState)
         {
             if( parentState==null)
             {

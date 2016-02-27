@@ -70,7 +70,6 @@ namespace Herstamac
             AddTransitionAsObject<TEvent5>(builder);
         }
 
-
         public ITransitionBuilderWithTransition<TInternalState, TEvent> When<TEvent>()
             where TEvent : class
         {
