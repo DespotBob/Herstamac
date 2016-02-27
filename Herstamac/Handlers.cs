@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Herstamac
+﻿namespace Herstamac
 {
     public class EventHandledResponse<TInternalState>
     {
@@ -24,7 +18,10 @@ namespace Herstamac
 
         public static EventHandledResponse<TInternalState> Swallow = new EventHandledResponse<TInternalState>("Swallow");
 
-        public static EventHandledResponse<TInternalState> Transition(State<TInternalState> state) { return new EventHandledResponse<TInternalState>(state); }
+        public static EventHandledResponse<TInternalState> Transition(State<TInternalState> state)
+        {
+            return new EventHandledResponse<TInternalState>(state);
+        }
 
         public bool IsTransition { get { return _transitionTo != null; } }
 

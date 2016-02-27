@@ -16,8 +16,8 @@ namespace Herstamac.Test
             : base(name)
         {}
 
-        public Func<Events.EntryEvent, OnOffInternalState, Herstamac.EventHandledResponse<OnOffInternalState>> EntryEventHandler { get; set; }
+        public Func<Events.EntryEvent, OnOffInternalState, EventHandledResponse<OnOffInternalState>> EntryEventHandler { get; set; }
 
-        public Func<Events.ExitEvent, OnOffInternalState, Herstamac.EventHandledResponse<OnOffInternalState>> ExitEventHandler { get; set; }
+        public Func<Events.ExitEvent, OnOffInternalState, EventHandledResponse<OnOffInternalState>> ExitEventHandler { get; set; }
     }
 }

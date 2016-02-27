@@ -1,6 +1,10 @@
 # Herstamac
 
-A Statemachine engine for .NET, with a fluent api for constructing a StateMachine definition.
+A Hierachical Statemachine engine for .NET, with: 
+<ul>
+	<li>A fluent api for building a StateMachine definition.</li>
+	<li>An api fpr building a StateMachine using a classical object model. (Warning: Soon to be refactored)</li>
+</ul>
 
 <h3> Example - A Machine Builder</h3>
 
@@ -70,7 +74,8 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
                 .Then((s,e) => Console.WriteLine( "Told to go slower"))
                 .TransitionTo(Stopped);
 
-            /* Whoops - looks like someone added some silly guard clauses - real ones would be meaningful */
+            /* Whoops - looks like someone added some silly guard clauses 
+				- real ones might be more meaningful */
             InState(Slow)
                 .When<GoStop>()
                 .WithGuard( (s,e) => true )
@@ -111,32 +116,29 @@ The MachineRunner is the engine that drives a state machine - it need two things
 Luckily, these can be generated using a StateMachineBuilder.
 
         var machine = new SlowFastStoppedStateMachineBuilder();
+		
+		var machineDefinition =  machine.GetMachineDefinition();
 		var machineStates = machine.NewMachineState(new SlowFastStoppedInternalState());
-        var MachineDefinition =  machine.GetMachineDefinition();
+        
 
 You can use the config action when calling GetMachineDefinition():
 
         /* Now use the machineBuilder to produce a MachineDefinition */
-        MachineDefinition<SlowFastStoppedInternalState> MachineDefinition =  machine.GetMachineDefinition( config => 
-            {
-                /* Name the Statemachine */
-                config.Name("FastSlow");   
+        var machineDefinition =  machine.GetMachineDefinition( config => 
+        {
+            /* Name the Statemachine */
+            config.Name("FastSlow");   
                 
-                /* Define where the logging information is going! */
-                config.Logger(x => Console.WriteLine(x));
+            /* Define where the logging information is going! */
+            config.Logger(x => Console.WriteLine(x));
                 
-                /* Define a function that will be used to serialise an event to a string */
-                config.LogEventWith(x => x.ToString());
+            /* Define a function that will be used to serialise an event to a string */
+            config.LogEventWith(x => x.ToString());
                 
-                /* Hmmm - Every state machine needs a unique Id - Get this one from here, otherwise it's a GUID! */
-                config.UniqueId.FromProperty(p => p.Id);
-            });
+            /* Hmmm - Every state machine needs a unique Id - Get this one from here, otherwise it's a GUID! */
+            config.UniqueId.FromProperty(p => p.Id);
+        });
 
-The MachineBuilder is also used to produce a MachineState
-
-        //
-        MachineState = machine.NewMachineState(new SlowFastStoppedInternalState());
-        
 Now we have all three things - Let's jam them into a MachineRunner, and dispatch an event into the state machine.
 
          MachineRunner.Dispatch(MachineDefinition, MachineState, new SlowFastStoppedStateMachineBuilder.GoFaster());

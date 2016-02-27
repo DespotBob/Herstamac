@@ -62,7 +62,7 @@ namespace Herstamac.Test
             MachineState = machineBuilder.NewMachineState(new OnOffInternalState());
             MachineDefintion = machineBuilder.GetMachineDefinition();
 
-            Herstamac.MachineRunner.Start(MachineDefintion, MachineState);
+            MachineRunner.Start(MachineDefintion, MachineState);
 
             Assert.IsTrue(MachineRunner.IsInState( MachineState,  MachineDefintion, On));
         }

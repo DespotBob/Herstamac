@@ -5,8 +5,6 @@ using System.Linq;
 
 namespace Herstamac
 {
-
-
     [DebuggerDisplay("State = {Name}")]
     public class State<TInternalState> : IState<TInternalState>
     {

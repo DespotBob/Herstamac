@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Herstamac
 {
+    /// <summary>
+    /// Holds the definition of a StateMachine once it has been built.
+    /// </summary>
     public class MachineDefinition<TInternalState>
     {
         IReadOnlyList<State<TInternalState>> _registeredState;

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Herstamac.Test.HistoryState
 {
@@ -13,23 +10,23 @@ namespace Herstamac.Test.HistoryState
 
     public class HistoryStateMachineBuilder : Herstamac.MachineBuilder<HistoryState>
     {
-        public Herstamac.State<HistoryState> RunningState = NewState("RunningState");
-        public Herstamac.State<HistoryState> SteerLeftState = NewState("SteerLeftState");
-        public Herstamac.State<HistoryState> SteerMiddleState = NewState("SteerMiddleState");
-        public Herstamac.State<HistoryState> SteerRightState = NewState("SteerRightState");
+        public State<HistoryState> RunningState = NewState("RunningState");
+        public State<HistoryState> SteerLeftState = NewState("SteerLeftState");
+        public State<HistoryState> SteerMiddleState = NewState("SteerMiddleState");
+        public State<HistoryState> SteerRightState = NewState("SteerRightState");
 
-        public Herstamac.State<HistoryState> StoppedState = NewState("StoppedState");
+        public State<HistoryState> StoppedState = NewState("StoppedState");
 
         public class TurnLeftEvent : Event { }
         public class StopEvent : Event { }
-        public class StartEvent : Event { }
+        public class StartEvent  { }
 
         public HistoryStateMachineBuilder()
         {
             Emit = (str) =>
             {
                 events.Add(str);
-                System.Console.WriteLine("Emit: '{0}'", str);
+                Console.WriteLine("Emit: '{0}'", str);
             };
 
             AddEventInterceptor((evnt) =>

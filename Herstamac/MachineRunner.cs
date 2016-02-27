@@ -6,14 +6,12 @@ namespace Herstamac
 {
     public static class MachineRunner
     {
-
         public static void Start<TInternalState>(MachineDefinition<TInternalState> machineDefinition, IMachineState<TInternalState> internalState)
         {
             Dispatch(machineDefinition, internalState, new Events.EntryEvent());
         }
 
         public static void Dispatch<TInternalState, TEvent>(MachineDefinition<TInternalState> machineDefinition, IMachineState<TInternalState> machineState, TEvent evnt)
-            where TEvent : Event
         {
             Dispatch(evnt
                 , machineState
@@ -36,7 +34,6 @@ namespace Herstamac
            , IEnumerable<Func<object, object>> eventInterceptors
            , MachineConfiguration<TInternalState> config
            , bool outerTransitionsTakePrecedence)
-            where TEvent : Herstamac.Event
         {
             var currentStates = Misc<TInternalState>.FindAllStates(relations, currentState);
 
@@ -126,7 +123,6 @@ namespace Herstamac
         }
 
         private static TEvent ExecuteInterceptorsForEvent<TEvent>(TEvent evnt, IEnumerable<Func<object, object>> eventInterceptors)
-            where TEvent : Event
         {
             TEvent evntToDispatch = evnt;
             foreach (var interceptor in eventInterceptors)
@@ -145,7 +141,6 @@ namespace Herstamac
             , IEnumerable<State<TInternalState>> statesToDispatchTo
             , IEnumerable<Func<object, object>> eventInterceptors
             , MachineConfiguration<TInternalState> config)
-            where TEvent : Event
         {
             TEvent evntToDispatch = ExecuteInterceptorsForEvent<TEvent>(evnt, eventInterceptors);
 
@@ -193,7 +188,7 @@ namespace Herstamac
 
 
         private static State<TInternalState> DispatchToStateViaReflection<TInternalState, T>(T evnt, TInternalState internalState, State<TInternalState> currentState)
-            where T : Event
+//             where T : Event
         {
             var methods = currentState
                 .GetType()
@@ -203,7 +198,7 @@ namespace Herstamac
 
             foreach (var method in methods)
             {
-                Func<T, TInternalState, Herstamac.EventHandledResponse<TInternalState>> func = method.GetValue(currentState) as Func<T, TInternalState, Herstamac.EventHandledResponse<TInternalState>>;
+                Func<T, TInternalState, Herstamac.EventHandledResponse<TInternalState>> func = method.GetValue(currentState) as Func<T, TInternalState, EventHandledResponse<TInternalState>>;
 
                 if (func == null)
                 {
