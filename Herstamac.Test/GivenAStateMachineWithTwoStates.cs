@@ -89,28 +89,6 @@ namespace Herstamac.Test
         }
 
         [TestMethod]
-        public void WhenAStateTransitionOccursTheOldStateHasItsExitConditionCalled()
-        {
-            int x = 0;
-
-            Off.ExitEventHandler = (evnt, state) => { 
-                x++;
-                return Herstamac.EventHandledResponse<OnOffInternalState>.Nothing; 
-            };
-
-            // Given - The Switch up event
-            MachineRunner.Dispatch(MachineDefintion, MachineState, new SwitchUp());
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefintion, Off));
-
-            // When -
-            MachineRunner.Dispatch(MachineDefintion, MachineState, new SwitchDown());
-
-            // Then 
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefintion, On));
-            Assert.AreEqual(1, x);
-        }
-
-        [TestMethod]
         public void WhenAStateTransitionOccursTheNewStateHasItsEntryConditionCalled()
         {
             MachineRunner.Dispatch(MachineDefintion, MachineState, new SwitchUp());

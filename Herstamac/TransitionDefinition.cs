@@ -4,21 +4,25 @@ namespace Herstamac
 {
     public class TransitionDefinition<TInternalState>
     {
+        public Func<object, bool> _typeGuardCondition;
+
         public Func<TInternalState, object, bool> _guardCondition;
         public Action<TInternalState, object, Action<string> > _action;
         public State<TInternalState> _transitionTo;
 
-        public TransitionDefinition() : this((s, o) => true, null, null)
+        public TransitionDefinition( Func<object, bool> typeGuardCondition, Func<TInternalState, object, bool> guardCondition, Action<TInternalState, object, Action<string>> action, State<TInternalState> transitionToState)
         {
-        }
+            if (typeGuardCondition == null)
+            {
+                throw new Exception("typeGuardCondition");
+            }
 
-        public TransitionDefinition(Func<TInternalState, object, bool> guardCondition, Action<TInternalState, object, Action<string>> action, State<TInternalState> transitionToState)
-        {
             if (guardCondition == null)
             {
                 throw new Exception( "guardCondition" );
             }
 
+            _typeGuardCondition = typeGuardCondition;
             _guardCondition = guardCondition;
             _action = action;
             _transitionTo = transitionToState;

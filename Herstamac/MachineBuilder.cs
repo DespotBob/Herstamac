@@ -7,7 +7,7 @@ namespace Herstamac
     {
         public IMachineState<TInternalState> _MachineState = new MachineState<TInternalState>();
 
-        private List<State<TInternalState>> RegisteredState = new List<State<TInternalState>>();
+        private List<State<TInternalState>> RegisteredStates = new List<State<TInternalState>>();
 
         private Dictionary<State<TInternalState>, State<TInternalState>> parentStates = new Dictionary<State<TInternalState>, State<TInternalState>>();
 
@@ -27,7 +27,7 @@ namespace Herstamac
 
             var newState = new State<TInternalState>(name);
 
-            RegisteredState.Add(newState);
+            RegisteredStates.Add(newState);
 
             return newState;
         }
@@ -39,7 +39,7 @@ namespace Herstamac
                 throw new ArgumentNullException("stateToRegister");
             }
 
-            RegisteredState.Add(stateToRegister);
+            RegisteredStates.Add(stateToRegister);
         }
 
         public StateBuilder<TInternalState> InState(State<TInternalState> stateToBuildWith)
@@ -49,7 +49,7 @@ namespace Herstamac
                 throw new ArgumentNullException("stateToBuildWith");
             }
 
-            if (RegisteredState.Contains(stateToBuildWith) == false)
+            if (RegisteredStates.Contains(stateToBuildWith) == false)
             {
                 throw new ApplicationException("Cannot build state on an unregistered state!");
             }
@@ -115,7 +115,7 @@ namespace Herstamac
 
         public MachineDefinition<TInternalState> GetMachineDefinition()
         {
-            return new MachineDefinition<TInternalState>(RegisteredState, parentStates, EventInterceptors, new MachineConfiguration<TInternalState>() );
+            return new MachineDefinition<TInternalState>(RegisteredStates, parentStates, EventInterceptors, new MachineConfiguration<TInternalState>() );
         }
 
         public MachineDefinition<TInternalState> GetMachineDefinition(Action<IMachineConfigure<TInternalState>> configure)
@@ -124,7 +124,7 @@ namespace Herstamac
 
             configure(config);
 
-            return new MachineDefinition<TInternalState>(RegisteredState, parentStates, EventInterceptors, config.Results);
+            return new MachineDefinition<TInternalState>(RegisteredStates, parentStates, EventInterceptors, config.Results);
         }
 
         public IMachineState<TInternalState> NewMachineState( TInternalState state)

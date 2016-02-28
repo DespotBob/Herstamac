@@ -14,10 +14,7 @@ namespace Herstamac.Test
     {
         public UnitTestState(string name)
             : base(name)
-        {}
-
-        public Func<Events.EntryEvent, OnOffInternalState, EventHandledResponse<OnOffInternalState>> EntryEventHandler { get; set; }
-
-        public Func<Events.ExitEvent, OnOffInternalState, EventHandledResponse<OnOffInternalState>> ExitEventHandler { get; set; }
+        {
+        }
     }
 }

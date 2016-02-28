@@ -29,15 +29,7 @@ namespace Herstamac
 
         public string Name {  get { return _name; }}
 
-        public Dictionary<Type, ListOfHandlers> Handlers { get { return _handlers; } }
-
-        public void Handles(Events.EntryEvent evnt)
-        {
-        }
-
-        public void Handles(Events.ExitEvent evnt)
-        {
-        }
+        public Dictionary<Type, ListOfHandlers> Handlers { get { return _handlers; } }    
 
         internal TransitionDefinition<TInternalState> AddTransitionDefinitionToState<TEvent,TAsHandler>()
                where TEvent : class
@@ -67,11 +59,18 @@ namespace Herstamac
 
             var h = _handlers[typeof(T1)];
 
-            var transDefinition = new TransitionDefinition<TInternalState>((s, o) => guard(s, (TAsEvent)o), null, null);
+            var transDefinition = new TransitionDefinition<TInternalState>( TypedGuard<TAsEvent>, (s, o) => guard(s, (TAsEvent)o), null, null);
 
             h.TransistionDefinitions.Add(transDefinition);
 
             return transDefinition;
         }
+
+        private static bool TypedGuard<TEvent>(object obj)
+        {
+            return obj.GetType() == typeof(TEvent);
+        }
     }
+
+
 }

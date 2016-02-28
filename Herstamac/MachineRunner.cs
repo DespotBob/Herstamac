@@ -91,7 +91,7 @@ namespace Herstamac
                 exitConditionsToRun.Reverse();
             }
 
-            // Dispath and do not transition...
+            // Dispatch and do not transition...
             var newState = DispatchToStates(new Events.ExitEvent(), machineState, exitConditionsToRun, eventInterceptors, config);
 
             machineState.ChangeState(_nextStates.Last());
@@ -180,40 +180,11 @@ namespace Herstamac
                     }
                 }
 
-                finalTransitionState = DispatchToStateViaReflection(evnt, internalState.CurrentInternalState, currentState) ?? finalTransitionState;
+                // Place holder...
+                // finalTransitionState = DispatchToStateViaReflection(evnt, internalState.CurrentInternalState, currentState) ?? finalTransitionState;
             }
 
             return finalTransitionState;
-        }
-
-
-        private static State<TInternalState> DispatchToStateViaReflection<TInternalState, T>(T evnt, TInternalState internalState, State<TInternalState> currentState)
-//             where T : Event
-        {
-            var methods = currentState
-                .GetType()
-                .GetProperties()
-                .Where(x => x.PropertyType == typeof(Func<T, TInternalState, Herstamac.EventHandledResponse<TInternalState>>))
-                .ToList();
-
-            foreach (var method in methods)
-            {
-                Func<T, TInternalState, Herstamac.EventHandledResponse<TInternalState>> func = method.GetValue(currentState) as Func<T, TInternalState, EventHandledResponse<TInternalState>>;
-
-                if (func == null)
-                {
-                    // Skip - this...
-                    continue;
-                }
-
-                var result = func(evnt, internalState);
-
-                if (result.IsTransition)
-                {
-                    return result.NextState;
-                }
-            }
-            return null;
         }
     }
 }
