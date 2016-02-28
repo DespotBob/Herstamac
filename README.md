@@ -3,7 +3,7 @@
 A Hierachical Statemachine engine for .NET, with: 
 <ul>
 	<li>A fluent api for building a StateMachine definition.</li>
-	<li>An api fpr building a StateMachine using a classical object model. (Warning: Soon to be refactored)</li>
+	<li>An api fpr building a StateMachine using a classical object model. (Removed: will be added again later..s)</li>
 </ul>
 
 <h3> Example - A Machine Builder</h3>
