@@ -19,21 +19,21 @@ namespace Herstamac.Test.Initial
         }
     }
 
-    public class GoFaster : Event { }
+    public class GoFaster { }
 
     public class InitialMachineBuilder : Herstamac.MachineBuilder<IState>
     {
-        public Herstamac.State<IState> GrandState = NewState("GrandState");
+        public InternalState<IState> GrandState = NewState("GrandState");
 
-        public Herstamac.State<IState> Outer = NewState("Outer");
-        public Herstamac.State<IState> Inner = NewState("Inner");
+        public InternalState<IState> Outer = NewState("Outer");
+        public InternalState<IState> Inner = NewState("Inner");
 
-        public Herstamac.State<IState> LoneState = new State<IState>("LoneState");
-        public Herstamac.State<IState> InnerLoneState = new State<IState>("InnerLoneState");
+        public InternalState<IState> LoneState = new InternalState<IState>("LoneState");
+        public InternalState<IState> InnerLoneState = new InternalState<IState>("InnerLoneState");
 
-        public Herstamac.State<IState> DeathState = new State<IState>("DeathState");
+        public InternalState<IState> DeathState = new InternalState<IState>("DeathState");
 
-        public class FeelingLonely : Event { }
+        public class FeelingLonely { }
 
         public InitialMachineBuilder()
         {

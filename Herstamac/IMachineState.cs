@@ -5,14 +5,14 @@ namespace Herstamac
     public interface IMachineState<TInternalState>
 
     {
-        State<TInternalState> CurrentState { get; }
+        InternalState<TInternalState> CurrentState { get; }
 
-        Dictionary<State<TInternalState>, State<TInternalState>> StateHistory { get; }
+        Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> StateHistory { get; }
 
         TInternalState CurrentInternalState { get; }
 
-        void ChangeState(State<TInternalState> newState);
+        void ChangeState(InternalState<TInternalState> newState);
 
-        void AddInitialHistory(State<TInternalState> parentState, State<TInternalState> initialState);
+        void AddInitialHistory(InternalState<TInternalState> parentState, InternalState<TInternalState> initialState);
     }
 }

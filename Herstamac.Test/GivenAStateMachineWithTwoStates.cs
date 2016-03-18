@@ -3,8 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Herstamac.Test
 {
-    public class SwitchUp : Event { }
-    public class SwitchDown : Event { }
+    public class SwitchUp { }
+    public class SwitchDown  { }
 
     [TestClass]
     public class GivenAStateMachineWithTwoState

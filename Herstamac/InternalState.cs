@@ -8,11 +8,11 @@ namespace Herstamac
 {
     public class MachineState<TInternalState> : IMachineState<TInternalState>
     {
-        private State<TInternalState> _currentState;
+        private InternalState<TInternalState> _currentState;
 
         private readonly TInternalState _currentInternalState;
 
-        private Dictionary<State<TInternalState>, State<TInternalState>> _stateHistories = new Dictionary<State<TInternalState>, State<TInternalState>>();
+        private Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> _stateHistories = new Dictionary<InternalState<TInternalState>, InternalState<TInternalState>>();
 
         public MachineState()
         {
@@ -23,7 +23,7 @@ namespace Herstamac
             _currentInternalState = state;
         }
 
-        public MachineState(Dictionary<State<TInternalState>, State<TInternalState>> stateHistories, TInternalState state, State<TInternalState> currentState )
+        public MachineState(Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> stateHistories, TInternalState state, InternalState<TInternalState> currentState )
             : this()
         {
             _stateHistories = stateHistories;
@@ -31,7 +31,7 @@ namespace Herstamac
             _currentState = currentState;
         }
 
-        State<TInternalState> IMachineState<TInternalState>.CurrentState
+        InternalState<TInternalState> IMachineState<TInternalState>.CurrentState
         { 
             get 
             {
@@ -39,7 +39,7 @@ namespace Herstamac
             } 
         }
 
-        Dictionary<State<TInternalState>, State<TInternalState>> IMachineState<TInternalState>.StateHistory 
+        Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> IMachineState<TInternalState>.StateHistory 
         {
             get
             {
@@ -55,12 +55,12 @@ namespace Herstamac
             } 
         }
 
-        void IMachineState<TInternalState>.ChangeState(State<TInternalState> newState)
+        void IMachineState<TInternalState>.ChangeState(InternalState<TInternalState> newState)
         {
             _currentState = newState;
         }
 
-        void IMachineState<TInternalState>.AddInitialHistory(State<TInternalState> parentState, State<TInternalState> initialState)
+        void IMachineState<TInternalState>.AddInitialHistory(InternalState<TInternalState> parentState, InternalState<TInternalState> initialState)
         {
             if( parentState==null)
             {

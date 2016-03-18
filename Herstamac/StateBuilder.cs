@@ -4,9 +4,9 @@ namespace Herstamac
 {
     public class StateBuilder<TInternalState> 
     {
-        private State<TInternalState> _state;
+        private InternalState<TInternalState> _state;
 
-        public StateBuilder(State<TInternalState> state)
+        public StateBuilder(InternalState<TInternalState> state)
         {
             _state = state;
         }

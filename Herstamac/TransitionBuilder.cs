@@ -45,7 +45,7 @@ namespace Herstamac
             return this;
         }
 
-        public void TransitionTo(State<TInternalState> transitionToState)
+        public void TransitionTo(InternalState<TInternalState> transitionToState)
         {
             _td._transitionTo = transitionToState;
         }

@@ -8,18 +8,18 @@ namespace Herstamac
 {
     public static class Misc<TInternalState>
     {
-        public static List<State<TInternalState>> FindAllStates(IReadOnlyDictionary<State<TInternalState>, State<TInternalState>> relations, State<TInternalState> childState)
+        public static List<InternalState<TInternalState>> FindAllStates(IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations, InternalState<TInternalState> childState)
         {
             if (childState == null)
             {
                 throw new ArgumentNullException("childState", "When trying to find a parent state the childState cannot be null!");
             }
 
-            var _nextStates = new Stack<State<TInternalState>>();
+            var _nextStates = new Stack<InternalState<TInternalState>>();
 
             // Find the list of states that represents every state that surround the state we are trying to transition to
 
-            State<TInternalState> currentState = childState;
+            InternalState<TInternalState> currentState = childState;
             _nextStates.Push(childState);
 
             while (relations.ContainsKey(currentState))
@@ -32,7 +32,7 @@ namespace Herstamac
             return _nextStates.ToList();
         }
 
-        public static State<TInternalState> FindParentState(IReadOnlyDictionary<State<TInternalState>, State<TInternalState>> relations, State<TInternalState> childState )
+        public static InternalState<TInternalState> FindParentState(IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations, InternalState<TInternalState> childState )
         {
             if (relations.ContainsKey(childState))
             {

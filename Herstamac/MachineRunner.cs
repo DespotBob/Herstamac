@@ -22,15 +22,15 @@ namespace Herstamac
                 , true);
         }
 
-        public static bool IsInState<TInternalState>(IMachineState<TInternalState> internalState, MachineDefinition<TInternalState> machineDefinition, State<TInternalState> state)
+        public static bool IsInState<TInternalState>(IMachineState<TInternalState> internalState, MachineDefinition<TInternalState> machineDefinition, InternalState<TInternalState> state)
         {
             return Misc<TInternalState>.FindAllStates(machineDefinition.ParentStates, internalState.CurrentState)
                 .Any(currentState => currentState == state);
         }
 
         private static void Dispatch<TInternalState, TEvent>(TEvent evnt, IMachineState<TInternalState> internalState
-           , State<TInternalState> currentState
-           , IReadOnlyDictionary<State<TInternalState>, State<TInternalState>> relations
+           , InternalState<TInternalState> currentState
+           , IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations
            , IEnumerable<Func<object, object>> eventInterceptors
            , MachineConfiguration<TInternalState> config
            , bool outerTransitionsTakePrecedence)
@@ -55,11 +55,11 @@ namespace Herstamac
             }
         }
 
-        private static State<TInternalState> TransitionTo<TInternalState>(
+        private static InternalState<TInternalState> TransitionTo<TInternalState>(
              object evnt
            , IMachineState<TInternalState> machineState
-           , IReadOnlyDictionary<State<TInternalState>, State<TInternalState>> relations
-           , State<TInternalState> transitionToState
+           , IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations
+           , InternalState<TInternalState> transitionToState
            , IEnumerable<Func<object, object>> eventInterceptors
            , bool exitInnerStatesFirst
            , MachineConfiguration<TInternalState>  config)
@@ -109,7 +109,7 @@ namespace Herstamac
         /// <summary>
         /// Runs through all the current states - and updates the state histories to the current ones.
         /// </summary>
-        private static void UpdateStateHistories<TInternalState>(IMachineState<TInternalState> internalState, IReadOnlyDictionary<State<TInternalState>, State<TInternalState>> parentStates, State<TInternalState> nextState)
+        private static void UpdateStateHistories<TInternalState>(IMachineState<TInternalState> internalState, IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> parentStates, InternalState<TInternalState> nextState)
         {
             foreach (var state in Misc<TInternalState>.FindAllStates(parentStates, nextState))
             {
@@ -136,9 +136,9 @@ namespace Herstamac
             return evntToDispatch;
         }
 
-        private static State<TInternalState> DispatchToStates<TInternalState, TEvent>(TEvent evnt
+        private static InternalState<TInternalState> DispatchToStates<TInternalState, TEvent>(TEvent evnt
             , IMachineState<TInternalState> internalState
-            , IEnumerable<State<TInternalState>> statesToDispatchTo
+            , IEnumerable<InternalState<TInternalState>> statesToDispatchTo
             , IEnumerable<Func<object, object>> eventInterceptors
             , MachineConfiguration<TInternalState> config)
         {
@@ -149,7 +149,7 @@ namespace Herstamac
                 // Do not dispatch a null event!
                 return null;
             }
-            State<TInternalState> finalTransitionState = null;
+            InternalState<TInternalState> finalTransitionState = null;
 
             foreach (var currentState in statesToDispatchTo)
             {

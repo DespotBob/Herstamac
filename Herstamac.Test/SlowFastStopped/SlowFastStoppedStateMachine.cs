@@ -2,22 +2,22 @@
 
 namespace Herstamac.Test.SlowFastStopped
 {
-    public class GoFaster : Event { }
-    public class GoSlower : Event { }
-    public class Stop : Event { }
+    public class GoFaster { }
+    public class GoSlower { }
+    public class Stop { }
 
     public class SlowFastStoppedStateMachineBuilder : MachineBuilder<SlowFastStoppedInternalState>
     {
         /* Create some states to use in our state machine - The names are the most important thing really. There here inside this builder - just cos */
-        public State<SlowFastStoppedInternalState> Moving = NewState("Moving");
-        public State<SlowFastStoppedInternalState> Slow = NewState("Slow");
-        public State<SlowFastStoppedInternalState> Fast = NewState("Fast");
-        public State<SlowFastStoppedInternalState> Stopped = NewState("Stopped");
+        public InternalState<SlowFastStoppedInternalState> Moving = NewState("Moving");
+        public InternalState<SlowFastStoppedInternalState> Slow = NewState("Slow");
+        public InternalState<SlowFastStoppedInternalState> Fast = NewState("Fast");
+        public InternalState<SlowFastStoppedInternalState> Stopped = NewState("Stopped");
 
         /* Events - Can be any class, and can be located anywhere, here there inside the builder - just cos.. */
-        public class GoFaster : Event { }
-        public class GoSlower : Event { }
-        public class GoStop : Event { }
+        public class GoFaster { }
+        public class GoSlower  { }
+        public class GoStop { }
 
         public SlowFastStoppedStateMachineBuilder()
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Herstamac.Test.SlowFastStopped
 {
-     public class BaseState : Herstamac.State<SlowFastStoppedInternalState>
+     public class BaseState : Herstamac.InternalState<SlowFastStoppedInternalState>
      {
          public BaseState(string name)
             : base(name)

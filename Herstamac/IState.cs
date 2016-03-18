@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Herstamac
 {
-    public interface IState<TInternalState>
+    public interface IInternalState<TInternalState>
     {
         string Name { get; }
-        Dictionary<Type, State<TInternalState>.ListOfHandlers> Handlers { get; }
+        Dictionary<Type, InternalState<TInternalState>.ListOfHandlers> Handlers { get; }
     }
 }

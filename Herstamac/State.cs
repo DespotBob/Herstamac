@@ -6,7 +6,7 @@ using System.Linq;
 namespace Herstamac
 {
     [DebuggerDisplay("State = {Name}")]
-    public class State<TInternalState> : IState<TInternalState>
+    public class InternalState<TInternalState> : IInternalState<TInternalState>
     {
         public class ListOfHandlers
         {
@@ -17,7 +17,7 @@ namespace Herstamac
 
         public Dictionary<Type, ListOfHandlers> _handlers = new Dictionary<Type, ListOfHandlers>();
 
-        public State(string name)
+        public InternalState(string name)
         {
             if (string.IsNullOrEmpty(name))
             {

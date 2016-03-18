@@ -6,7 +6,7 @@ namespace Herstamac
     public interface IMachineDefinition<TInternalState>
     {
         IReadOnlyList<Func<object, object>> EventInterceptors { get; }
-        IReadOnlyDictionary<State<TInternalState>, State<TInternalState>> ParentStates { get; }
-        IReadOnlyList<State<TInternalState>> RegisteredState { get; }
+        IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> ParentStates { get; }
+        IReadOnlyList<InternalState<TInternalState>> RegisteredState { get; }
     }
 }

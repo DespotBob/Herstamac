@@ -7,9 +7,9 @@ namespace Herstamac
     {
         public IMachineState<TInternalState> _MachineState = new MachineState<TInternalState>();
 
-        private List<State<TInternalState>> RegisteredStates = new List<State<TInternalState>>();
+        private List<InternalState<TInternalState>> RegisteredStates = new List<InternalState<TInternalState>>();
 
-        private Dictionary<State<TInternalState>, State<TInternalState>> parentStates = new Dictionary<State<TInternalState>, State<TInternalState>>();
+        private Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> parentStates = new Dictionary<InternalState<TInternalState>, InternalState<TInternalState>>();
 
         private readonly List<Func<object, object>> EventInterceptors;
 
@@ -18,21 +18,21 @@ namespace Herstamac
             EventInterceptors = new List<Func<object, object>>();
         }
 
-        public State<TInternalState> RegisterState(string name)
+        public InternalState<TInternalState> RegisterState(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
             }
 
-            var newState = new State<TInternalState>(name);
+            var newState = new InternalState<TInternalState>(name);
 
             RegisteredStates.Add(newState);
 
             return newState;
         }
 
-        public void RegisterState(State<TInternalState> stateToRegister)
+        public void RegisterState(InternalState<TInternalState> stateToRegister)
         {
             if (stateToRegister == null)
             {
@@ -42,7 +42,7 @@ namespace Herstamac
             RegisteredStates.Add(stateToRegister);
         }
 
-        public StateBuilder<TInternalState> InState(State<TInternalState> stateToBuildWith)
+        public StateBuilder<TInternalState> InState(InternalState<TInternalState> stateToBuildWith)
         {
             if (stateToBuildWith == null)
             {
@@ -62,7 +62,7 @@ namespace Herstamac
             return new StateBuilder<TInternalState>(stateToBuildWith);
         }
 
-        public void RegisterParentStateFor(State<TInternalState> childState, Func<State<TInternalState>> parentState)
+        public void RegisterParentStateFor(InternalState<TInternalState> childState, Func<InternalState<TInternalState>> parentState)
         {
             if (childState == null)
             {
@@ -82,7 +82,7 @@ namespace Herstamac
             parentStates.Add(childState, parentState());
         }
 
-        public void RegisterHistoryState(State<TInternalState> historyState, State<TInternalState> initialState)
+        public void RegisterHistoryState(InternalState<TInternalState> historyState, InternalState<TInternalState> initialState)
         {
             if (historyState == null)
             {
@@ -134,9 +134,9 @@ namespace Herstamac
             return t;
         }
 
-        public static State<TInternalState> NewState(string name)
+        public static InternalState<TInternalState> NewState(string name)
         {
-            return new State<TInternalState>(name);
+            return new InternalState<TInternalState>(name);
         }
     } 
 }

@@ -10,7 +10,7 @@ namespace Herstamac.Test
     {
     }
 
-    public class UnitTestState : State<OnOffInternalState>
+    public class UnitTestState : InternalState<OnOffInternalState>
     {
         public UnitTestState(string name)
             : base(name)

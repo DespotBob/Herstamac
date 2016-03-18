@@ -9,8 +9,8 @@ namespace Herstamac
     /// </summary>
     public class MachineDefinition<TInternalState>
     {
-        IReadOnlyList<State<TInternalState>> _registeredState;
-        IReadOnlyDictionary<State<TInternalState>, State<TInternalState>> _parentStates;
+        IReadOnlyList<InternalState<TInternalState>> _registeredState;
+        IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> _parentStates;
         IReadOnlyList<Func<object, object>> _eventInterceptors;
 
         private readonly Action<string> _log;
@@ -18,8 +18,8 @@ namespace Herstamac
         MachineConfiguration<TInternalState> _config;
 
         internal MachineDefinition(
-            IReadOnlyList<State<TInternalState>> registeredStates,
-            IReadOnlyDictionary<State<TInternalState>, State<TInternalState>> parentStates,
+            IReadOnlyList<InternalState<TInternalState>> registeredStates,
+            IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> parentStates,
             IReadOnlyList<Func<object, object>> eventInterceptors,
             MachineConfiguration<TInternalState> config )
         {
@@ -48,7 +48,7 @@ namespace Herstamac
             Log();
         }
 
-        internal IReadOnlyList<State<TInternalState>> RegisteredState
+        internal IReadOnlyList<InternalState<TInternalState>> RegisteredState
         {
             get
             {
@@ -56,7 +56,7 @@ namespace Herstamac
             }
         }
 
-        internal IReadOnlyDictionary<State<TInternalState>, State<TInternalState>> ParentStates
+        internal IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> ParentStates
         {
             get
             {
