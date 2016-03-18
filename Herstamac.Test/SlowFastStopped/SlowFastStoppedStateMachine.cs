@@ -9,10 +9,10 @@ namespace Herstamac.Test.SlowFastStopped
     public class SlowFastStoppedStateMachineBuilder : MachineBuilder<SlowFastStoppedInternalState>
     {
         /* Create some states to use in our state machine - The names are the most important thing really. There here inside this builder - just cos */
-        public InternalState<SlowFastStoppedInternalState> Moving = NewState("Moving");
-        public InternalState<SlowFastStoppedInternalState> Slow = NewState("Slow");
-        public InternalState<SlowFastStoppedInternalState> Fast = NewState("Fast");
-        public InternalState<SlowFastStoppedInternalState> Stopped = NewState("Stopped");
+        public State Moving = NewState("Moving");
+        public State Slow = NewState("Slow");
+        public State Fast = NewState("Fast");
+        public State Stopped = NewState("Stopped");
 
         /* Events - Can be any class, and can be located anywhere, here there inside the builder - just cos.. */
         public class GoFaster { }
@@ -26,6 +26,7 @@ namespace Herstamac.Test.SlowFastStopped
             RegisterState(Slow);
             RegisterState(Fast);
             RegisterState(Stopped);
+            RegisterState(Moving);
 
             /* Define a state Hierachy....*/
             RegisterParentStateFor(Slow, () => Moving);

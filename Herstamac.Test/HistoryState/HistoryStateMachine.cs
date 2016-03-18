@@ -10,12 +10,12 @@ namespace Herstamac.Test.HistoryState
 
     public class HistoryStateMachineBuilder : Herstamac.MachineBuilder<HistoryState>
     {
-        public InternalState<HistoryState> RunningState = NewState("RunningState");
-        public InternalState<HistoryState> SteerLeftState = NewState("SteerLeftState");
-        public InternalState<HistoryState> SteerMiddleState = NewState("SteerMiddleState");
-        public InternalState<HistoryState> SteerRightState = NewState("SteerRightState");
+        public State RunningState = NewState("RunningState");
+        public State SteerLeftState = NewState("SteerLeftState");
+        public State SteerMiddleState = NewState("SteerMiddleState");
+        public State SteerRightState = NewState("SteerRightState");
 
-        public InternalState<HistoryState> StoppedState = NewState("StoppedState");
+        public State StoppedState = NewState("StoppedState");
 
         public class TurnLeftEvent { }
         public class StopEvent { }

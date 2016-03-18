@@ -4,7 +4,7 @@ namespace Herstamac
 {
     public interface ITransistionBuilderEnd<TInternalState, TEvent> where TEvent : class
     {
-        void TransitionTo(InternalState<TInternalState> transitionToState);
+        void TransitionTo(State transitionToState);
     }
 
     public interface ITransitionBuilderWithTransition<TInternalState, TEvent> where TEvent : class
@@ -16,7 +16,7 @@ namespace Herstamac
         ITransistionBuilderEnd<TInternalState, TEvent> Then(Action<TInternalState, TEvent, Action<string>> action);
         ITransistionBuilderEnd<TInternalState, TEvent> Then(Action handler);
 
-        void TransitionTo(InternalState<TInternalState> transitionToState);
+        void TransitionTo(State transitionToState);
     }
 
     public interface ITransitionBuilder<TInternalState, TEvent> where TEvent : class

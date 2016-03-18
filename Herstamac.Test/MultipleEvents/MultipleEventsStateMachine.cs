@@ -9,9 +9,9 @@ namespace Herstamac.Test.MultipleEvents
 
     public class MultipleEventsStateMachine : MachineBuilder<MultipleEventsMachineState>
     {
-        public InternalState<MultipleEventsMachineState> Sane = NewState("Sane");
-        public InternalState<MultipleEventsMachineState> Insane = NewState("Insane");
-        public InternalState<MultipleEventsMachineState> Sucidal = NewState("Sucidal");
+        public State Sane = NewState("Sane");
+        public State Insane = NewState("Insane");
+        public State Sucidal = NewState("Sucidal");
 
         public class TelephoneCall  { }
         public class EmailMessage { }

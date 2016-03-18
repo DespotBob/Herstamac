@@ -6,6 +6,30 @@ using System.Linq;
 namespace Herstamac
 {
     [DebuggerDisplay("State = {Name}")]
+    public class State : IState
+    {
+        private readonly string _name;
+
+        public State(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("name");
+            }
+            _name = name;
+        }
+
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+        }
+    }
+
+
+    [DebuggerDisplay("State = {Name}")]
     public class InternalState<TInternalState> : IInternalState<TInternalState>
     {
         public class ListOfHandlers

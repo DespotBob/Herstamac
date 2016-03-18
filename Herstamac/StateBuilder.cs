@@ -5,17 +5,19 @@ namespace Herstamac
     public class StateBuilder<TInternalState> 
     {
         private InternalState<TInternalState> _state;
+        private readonly Func<State, InternalState<TInternalState>> _lookup;
 
-        public StateBuilder(InternalState<TInternalState> state)
+        public StateBuilder(InternalState<TInternalState> state, Func<State, InternalState<TInternalState>> lookup)
         {
             _state = state;
+            _lookup = lookup;
         }
 
         public void When<TEvent>( Action<ITransitionBuilderWithTransition<TInternalState,TEvent>> builder )
             where TEvent : class
         {
             var transDefinition = _state.AddTransitionDefinitionToState<TEvent>();
-            var localbBuilder = new TransitionBuilder<TInternalState, TEvent>(transDefinition);
+            var localbBuilder = new TransitionBuilder<TInternalState, TEvent>(transDefinition, _lookup);
             builder(localbBuilder);
         }
 
@@ -30,7 +32,7 @@ namespace Herstamac
         private void AddTransitionAsObject<TEvent1>(Action<ITransitionBuilderWithTransition<TInternalState, object>> builder) where TEvent1 : class
         {
             var td = _state.AddTransitionDefinitionToState<TEvent1, object>();
-            var localbBuilder = new TransitionBuilder<TInternalState, object>(td);
+            var localbBuilder = new TransitionBuilder<TInternalState, object>(td, _lookup);
             builder(localbBuilder);
         }
 
@@ -74,19 +76,19 @@ namespace Herstamac
             where TEvent : class
         {
             var transDefinition = _state.AddTransitionDefinitionToState<TEvent>();
-            return new TransitionBuilder<TInternalState, TEvent>(transDefinition);
+            return new TransitionBuilder<TInternalState, TEvent>(transDefinition, _lookup);
         }
 
         public ITransitionBuilderWithGuard<TInternalState, Events.ExitEvent> OnExit()
         {
             var transDefinition = _state.AddTransitionDefinitionToState<Events.ExitEvent>();
-            return new TransitionBuilder<TInternalState, Events.ExitEvent>(transDefinition);
+            return new TransitionBuilder<TInternalState, Events.ExitEvent>(transDefinition, _lookup);
         }
 
         public ITransitionBuilderWithGuard<TInternalState, Events.EntryEvent> OnEntry()
         {
             var transDefinition = _state.AddTransitionDefinitionToState<Events.EntryEvent>();
-            return new TransitionBuilder<TInternalState, Events.EntryEvent>(transDefinition);
+            return new TransitionBuilder<TInternalState, Events.EntryEvent>(transDefinition, _lookup);
         }
     }
 }

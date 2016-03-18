@@ -10,10 +10,12 @@ namespace Herstamac
         where TEvent : class
     {
         TransitionDefinition<TInternalState> _td;
+        private readonly Func<State, InternalState<TInternalState>>_lookup;
 
-        public TransitionBuilder(TransitionDefinition<TInternalState> td)
+        public TransitionBuilder(TransitionDefinition<TInternalState> td, Func<State, InternalState<TInternalState>> lookup)
         {
             _td = td;
+            _lookup = lookup;
         }
 
         public ITransitionBuilder<TInternalState, TEvent> WithGuard(Func<TInternalState, TEvent, bool> guard)
@@ -45,9 +47,9 @@ namespace Herstamac
             return this;
         }
 
-        public void TransitionTo(InternalState<TInternalState> transitionToState)
+        public void TransitionTo(State transitionToState)
         {
-            _td._transitionTo = transitionToState;
+            _td._transitionTo = _lookup( transitionToState );
         }
     }
 }

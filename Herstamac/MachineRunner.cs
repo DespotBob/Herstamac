@@ -22,10 +22,10 @@ namespace Herstamac
                 , true);
         }
 
-        public static bool IsInState<TInternalState>(IMachineState<TInternalState> internalState, MachineDefinition<TInternalState> machineDefinition, InternalState<TInternalState> state)
+        public static bool IsInState<TInternalState>(IMachineState<TInternalState> internalState, MachineDefinition<TInternalState> machineDefinition, State state)
         {
             return Misc<TInternalState>.FindAllStates(machineDefinition.ParentStates, internalState.CurrentState)
-                .Any(currentState => currentState == state);
+                .Any(currentState => currentState.Name == state.Name);
         }
 
         private static void Dispatch<TInternalState, TEvent>(TEvent evnt, IMachineState<TInternalState> internalState

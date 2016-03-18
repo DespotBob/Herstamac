@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Herstamac.Test.Initial
 {
@@ -23,15 +20,15 @@ namespace Herstamac.Test.Initial
 
     public class InitialMachineBuilder : Herstamac.MachineBuilder<IState>
     {
-        public InternalState<IState> GrandState = NewState("GrandState");
+        public Herstamac.State GrandState = NewState("GrandState");
 
-        public InternalState<IState> Outer = NewState("Outer");
-        public InternalState<IState> Inner = NewState("Inner");
+        public Herstamac.State Outer = NewState("Outer");
+        public Herstamac.State Inner = NewState("Inner");
 
-        public InternalState<IState> LoneState = new InternalState<IState>("LoneState");
-        public InternalState<IState> InnerLoneState = new InternalState<IState>("InnerLoneState");
+        public Herstamac.State LoneState = new Herstamac.State("LoneState");
+        public Herstamac.State InnerLoneState = new Herstamac.State("InnerLoneState");
 
-        public InternalState<IState> DeathState = new InternalState<IState>("DeathState");
+        public Herstamac.State DeathState = new Herstamac.State("DeathState");
 
         public class FeelingLonely { }
 

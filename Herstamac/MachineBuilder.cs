@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Herstamac
 { 
@@ -13,7 +14,7 @@ namespace Herstamac
 
         private readonly List<Func<object, object>> EventInterceptors;
 
-        public MachineBuilder() : base()
+        public MachineBuilder() 
         {
             EventInterceptors = new List<Func<object, object>>();
         }
@@ -32,37 +33,34 @@ namespace Herstamac
             return newState;
         }
 
-        public void RegisterState(InternalState<TInternalState> stateToRegister)
+        public InternalState<TInternalState> RegisterState(State stateToRegister)
         {
-            if (stateToRegister == null)
-            {
-                throw new ArgumentNullException("stateToRegister");
-            }
-
-            RegisteredStates.Add(stateToRegister);
+            return RegisterState(stateToRegister.Name);
         }
 
-        public StateBuilder<TInternalState> InState(InternalState<TInternalState> stateToBuildWith)
+        public StateBuilder<TInternalState> InState(State stateToBuildWith)
         {
             if (stateToBuildWith == null)
             {
                 throw new ArgumentNullException("stateToBuildWith");
             }
 
-            if (RegisteredStates.Contains(stateToBuildWith) == false)
+            var lookedUp = Lookup(stateToBuildWith);
+
+            if (RegisteredStates.Contains(lookedUp) == false)
             {
                 throw new ApplicationException("Cannot build state on an unregistered state!");
             }
 
             if (_MachineState.CurrentState == null || Misc<TInternalState>.FindAllStates(this.parentStates, _MachineState.CurrentState).Count == 0)
             {
-                _MachineState.ChangeState(stateToBuildWith);
+                _MachineState.ChangeState(lookedUp);
             }
 
-            return new StateBuilder<TInternalState>(stateToBuildWith);
+            return new StateBuilder<TInternalState>(lookedUp, Lookup);
         }
 
-        public void RegisterParentStateFor(InternalState<TInternalState> childState, Func<InternalState<TInternalState>> parentState)
+        public void RegisterParentStateFor(State childState, Func<State> parentState)
         {
             if (childState == null)
             {
@@ -79,10 +77,10 @@ namespace Herstamac
                 throw new ArgumentOutOfRangeException("childState", "The child state cannot be the same as the parent state in a sub-state relationship!");
             }
 
-            parentStates.Add(childState, parentState());
+            parentStates.Add( Lookup(childState), Lookup(parentState()));
         }
 
-        public void RegisterHistoryState(InternalState<TInternalState> historyState, InternalState<TInternalState> initialState)
+        public void RegisterHistoryState(State historyState, State initialState)
         {
             if (historyState == null)
             {
@@ -99,7 +97,7 @@ namespace Herstamac
                 throw new ArgumentOutOfRangeException("initialState", "The initialState state cannot be the same as the historyState state when registering a history start!");
             }
 
-            _MachineState.StateHistory.Add(historyState, initialState);
+            _MachineState.StateHistory.Add( Lookup( historyState), Lookup(initialState));
 
         }
 
@@ -134,9 +132,14 @@ namespace Herstamac
             return t;
         }
 
-        public static InternalState<TInternalState> NewState(string name)
+        public static State NewState(string name)
         {
-            return new InternalState<TInternalState>(name);
+            return new State(name);
+        }
+
+        public InternalState<TInternalState> Lookup(IState state)
+        {
+            return RegisteredStates.First(x => x.Name == state.Name);
         }
     } 
 }
