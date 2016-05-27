@@ -165,6 +165,13 @@ namespace Herstamac
                     }
                 }
 
+                if (evnt.GetType() != typeof(Events.EntryEvent) & evnt.GetType() != typeof(Events.ExitEvent))
+                {
+                    if (currentState._handlers.ContainsKey(typeof(Events.AnyEvent)))
+                    {
+                        finalTransitionState = Execute(new Events.AnyEvent(), internalState, config, finalTransitionState, currentState);
+                    }
+                }
                 // Place holder...
                 // finalTransitionState = DispatchToStateViaReflection(evnt, internalState.CurrentInternalState, currentState) ?? finalTransitionState;
             }

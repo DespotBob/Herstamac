@@ -11,4 +11,8 @@
     public class DefaultEvent : Event
     {
     }
+
+    public class AnyEvent : Event
+    {
+    }
 }

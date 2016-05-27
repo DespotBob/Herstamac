@@ -214,3 +214,15 @@ Event handlers can be added to any state:
             .TransitionTo(Error);
 
 These handlers will be executed if no other event is run.
+
+<h3>Using Any Event handlers</h3>
+
+Sometime you might want a handler to be run, when ANY event is received by a state. 
+
+	InState(Outer)
+		.OnAnyEvent()
+		.Then((s,e) => s.Counter1++);
+
+These events are:
+* Executed after every other event handler.
+* Are not execeuted on Entry and Exit events.
