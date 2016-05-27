@@ -204,3 +204,13 @@ Invent Interceptors can be added to a statemachine. These are run before any eve
         });
 
 
+<h3>Using Default Event handlers</h3>
+
+Event handlers can be added to any state:
+
+        InState(Inner)
+            .OnDefaultEvent()
+            .Then((s,e) => s.Counter++ )
+            .TransitionTo(Error);
+
+These handlers will be executed if no other event is run.
