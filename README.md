@@ -10,100 +10,99 @@ A Hierachical Statemachine engine for .NET, with:
 
 A MachineBuilder is a class that is used to produce a StateMachineDefinition.
 
-    public class SlowFastStoppedStateMachineBuilder : MachineBuilder<SlowFastStoppedInternalState>
-    {
-        /* Create some states to use in our state machine - The names are the most important thing really. There here inside this builder - just cos */
-        public State<SlowFastStoppedInternalState> Moving = NewState("Moving");
-        public State<SlowFastStoppedInternalState> Slow = NewState("Slow");
-        public State<SlowFastStoppedInternalState> Fast = NewState("Fast");
-        public State<SlowFastStoppedInternalState> Stopped = NewState("Stopped"); 
+		public class SlowFastStoppedStateMachineBuilder : MachineBuilder<SlowFastStoppedInternalState>
+		{
+			/* Create some states to use in our state machine - The names are the most important thing really. There here inside this builder - just cos */
+			public State Moving = NewState("Moving");
+			public State Slow = NewState("Slow");
+			public State Fast = NewState("Fast");
+			public State Stopped = NewState("Stopped");
 
-        /* Events - Can be any class, and can be located anywhere, here there inside the builder - just cos.. */
-        public class GoFaster : Event { }
-        public class GoSlower : Event { }
-        public class GoStop : Event { }
-    
-        public SlowFastStoppedStateMachineBuilder()
-        {
-            /* Register the states before use.. */
-            RegisterState(Stopped);
-            RegisterState(Slow);
-            RegisterState(Fast);
-            RegisterState(Stopped);
-            
-            /* Define a state Hierachy....*/
-            RegisterParentStateFor(Slow, () => Moving);
-            RegisterParentStateFor(Fast, () => Moving);
+			/* Events - Can be any class, and can be located anywhere, here there inside the builder - just cos.. */
+			public class GoFaster { }
+			public class GoSlower  { }
+			public class GoStop { }
 
-            /* Use a style of fluent api to define your behaviour */
-            
-            /* Some code that runs when the Stopped state is entered */
-            InState(Stopped)
-                .OnEntry()
-                .Then((state, @event) =>
-                {
-                    Console.WriteLine("Entering Stoppped!");
-                });
+			public SlowFastStoppedStateMachineBuilder()
+			{
+				/* Register the states before use.. */
+				RegisterState(Stopped);
+				RegisterState(Slow);
+				RegisterState(Fast);
+				RegisterState(Stopped);
+				RegisterState(Moving);
 
-            /* Some code that runs when the Stopped state is exited */
-            InState(Stopped)
-                .OnExit()
-                .Then((state, @event, log ) =>
-                    log("Log something - This can be identified easily in the logs..")
-                });
+				/* Define a state Hierachy....*/
+				RegisterParentStateFor(Slow, () => Moving);
+				RegisterParentStateFor(Fast, () => Moving);
 
-            /* In the stopped state, when a GoFasterEvent arrives - transition to the slow state */
-            InState(Stopped)
-                .When<GoFaster>()
-                .TransitionTo(Slow);
+				/* Use a style of fluent api to define your behaviour */
 
-            InState(Slow)
-                .OnExit()
-                .Then((state, @event) => 
-				{
-                    Console.WriteLine("Exiting Slow!");
-                });
+				/* Some code that runs when the Stopped state is entered */
+				InState(Stopped)
+					.OnEntry()
+					.Then((state, @event, log) =>
+					{
+						log("Entered log in the stopped state!");
+					});
 
-            InState(Slow)
-                .When<GoFaster>()
-                .TransitionTo(Fast);
+				/* Some code that runs when the Stopped state is exited */
+				InState(Stopped)
+					.OnExit()
+					.Then((state, @event, log) => {
+						log("Log something - This can be identified easily in the logs..");
+					});
 
-            /* Right - just going to use (s,e) for state and @event from now on.... */
-            InState(Slow)
-                .When<GoSlower>()
-                .Then((s,e) => Console.WriteLine( "Told to go slower"))
-                .TransitionTo(Stopped);
+				/* In the stopped state, when a GoFasterEvent arrives - transition to the slow state */
+				InState(Stopped)
+					.When<GoFaster>()
+					.TransitionTo(Slow);
 
-            /* Whoops - looks like someone added some silly guard clauses 
-				- real ones might be more meaningful */
-            InState(Slow)
-                .When<GoStop>()
-                .WithGuard( (s,e) => true )
-                .Then()
-                .TransitionTo(Stopped);
-                
-            /* A Good thing this Guard condition is in place - this guard condition stops the exception from being thrown. */
-            InState(Slow)
-                .When<GoStop>()
-                .WithGuard((s, e) => false)
-                .Then(() => 
-				{ 
-					throw new ApplicationException("This will not be called, as the guard condition is always false"); 
-				});
+				InState(Slow)
+					.OnExit()
+					.Then((state, @event) => {
+						Console.WriteLine("Entering Slow!");
+					});
 
-            InState(Fast)
-                .When<GoSlower>()
-                .TransitionTo(Slow);
+				InState(Slow)
+					.When<GoFaster>()
+					.TransitionTo(Fast);
 
-            InState(Fast)
-                .When<GoFaster>()
-                .Then((state, evnt) => Console.WriteLine("I cannae go nae faster..."));
+				/* Right - just going to use (s,e) for state and @event from now on.... */
+				InState(Slow)
+					.When<GoSlower>()
+					.Then((s,e) => Console.WriteLine( "Told to go slower"))
+					.TransitionTo(Stopped);
 
-            InState(Fast)
-                .When<GoStop>()
-                .TransitionTo(Stopped);
-        }
-    }
+				/* Whoops - looks like someone added some silly guard clauses - real ones would be meaningful */
+				InState(Slow)
+					.When<GoStop>()
+					.WithGuard((s, e) => true)
+					.Then()
+					.TransitionTo(Stopped);
+
+				/* A Good thing this Guard condition is in place ! */
+				InState(Slow)
+					.When<GoStop>()
+					.WithGuard((s, e) => false)
+					.Then(() =>
+					{
+						throw new ApplicationException("This will not be called, as the guard condition is always false");
+					});
+
+				InState(Fast)
+					.When<GoSlower>()
+					.TransitionTo(Slow);
+
+				InState(Fast)
+					.When<GoFaster>()
+					.Then((state, evnt) => Console.WriteLine("I cannae go nae faster..."));
+
+				InState(Fast)
+					.When<GoStop>()
+					.TransitionTo(Stopped);
+			}
+		}
     
 <h3>Example 2 - Using a Machine builder to get a StateMachine running.</h3>
 

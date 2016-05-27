@@ -56,6 +56,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DefaultHandlers\DefaultHandlerBuilder.cs" />
+    <Compile Include="DefaultHandlers\DefaultHandlerTests.cs" />
     <Compile Include="HistoryState\HistoryStateMachine.cs" />
     <Compile Include="HistoryState\HistoryTests.cs" />
     <Compile Include="Initial\Initial.cs" />

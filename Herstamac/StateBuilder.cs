@@ -90,5 +90,11 @@ namespace Herstamac
             var transDefinition = _state.AddTransitionDefinitionToState<Events.EntryEvent>();
             return new TransitionBuilder<TInternalState, Events.EntryEvent>(transDefinition, _lookup);
         }
+
+        public ITransitionBuilderWithGuard<TInternalState, Events.DefaultEvent> OnDefaultEvent()
+        {
+            var transDefinition = _state.AddTransitionDefinitionToState<Events.DefaultEvent>();
+            return new TransitionBuilder<TInternalState, Events.DefaultEvent>(transDefinition, _lookup);
+        }
     }
 }

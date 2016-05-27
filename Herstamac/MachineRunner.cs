@@ -42,7 +42,7 @@ namespace Herstamac
                 currentStates.Reverse();
             }
 
-            var nextState = DispatchToStates<TInternalState, TEvent>(evnt, internalState, currentStates, eventInterceptors, config);
+            var nextState = DispatchToStates(evnt, internalState, currentStates, eventInterceptors, config);
 
             if (nextState != null && nextState != currentStates.Last())
             {
@@ -142,7 +142,7 @@ namespace Herstamac
             , IEnumerable<Func<object, object>> eventInterceptors
             , MachineConfiguration<TInternalState> config)
         {
-            TEvent evntToDispatch = ExecuteInterceptorsForEvent<TEvent>(evnt, eventInterceptors);
+            TEvent evntToDispatch = ExecuteInterceptorsForEvent(evnt, eventInterceptors);
 
             if (evntToDispatch == null)
             {
@@ -155,33 +155,47 @@ namespace Herstamac
             {
                 if (currentState._handlers.ContainsKey(evnt.GetType()))
                 {
-                    var handler = currentState._handlers[evnt.GetType()];
-
-                    Action<string> log = str => config.Logger(string.Format("SM:{0}:{1} = State: {2} - {3}"
-                        , config.Name
-                        , config.GetUniqueId(internalState.CurrentInternalState)
-                        , currentState.Name
-                        , str));
-
-                    foreach (var action in handler.TransistionDefinitions)
+                    finalTransitionState = Execute(evnt, internalState, config, finalTransitionState, currentState);
+                }
+                else if( evnt.GetType() != typeof(Events.EntryEvent) & evnt.GetType() != typeof( Events.ExitEvent ))
+                {
+                    if (currentState._handlers.ContainsKey(typeof(Events.DefaultEvent)))
                     {
-                        if (action.GuardCondition(internalState.CurrentInternalState, evnt))
-                        {
-                            if (action.Action != null)
-                            {
-                                action.Action(internalState.CurrentInternalState, evnt, log );
-                            }
-
-                            if (action.TransitionTo != null)
-                            {
-                                finalTransitionState = finalTransitionState ?? action.TransitionTo;
-                            }
-                        }
+                        finalTransitionState = Execute( new Events.DefaultEvent(), internalState, config, finalTransitionState, currentState);
                     }
                 }
 
                 // Place holder...
                 // finalTransitionState = DispatchToStateViaReflection(evnt, internalState.CurrentInternalState, currentState) ?? finalTransitionState;
+            }
+
+            return finalTransitionState;
+        }
+
+        private static InternalState<TInternalState> Execute<TInternalState, TEvent>(TEvent evnt, IMachineState<TInternalState> internalState, MachineConfiguration<TInternalState> config, InternalState<TInternalState> finalTransitionState, InternalState<TInternalState> currentState)
+        {
+            var handler = currentState._handlers[evnt.GetType()];
+
+            Action<string> log = str => config.Logger(string.Format("SM:{0}:{1} = State: {2} - {3}"
+                , config.Name
+                , config.GetUniqueId(internalState.CurrentInternalState)
+                , currentState.Name
+                , str));
+
+            foreach (var action in handler.TransistionDefinitions)
+            {
+                if (action.GuardCondition(internalState.CurrentInternalState, evnt))
+                {
+                    if (action.Action != null)
+                    {
+                        action.Action(internalState.CurrentInternalState, evnt, log);
+                    }
+
+                    if (action.TransitionTo != null)
+                    {
+                        finalTransitionState = finalTransitionState ?? action.TransitionTo;
+                    }
+                }
             }
 
             return finalTransitionState;

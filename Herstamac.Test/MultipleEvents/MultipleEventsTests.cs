@@ -1,6 +1,5 @@
-﻿using Herstamac.Test.MultipleEvents;
+﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace Herstamac.Test.MultipleEvents
 {

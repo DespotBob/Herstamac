@@ -2,10 +2,6 @@
 
 namespace Herstamac.Test.SlowFastStopped
 {
-    public class GoFaster { }
-    public class GoSlower { }
-    public class Stop { }
-
     public class SlowFastStoppedStateMachineBuilder : MachineBuilder<SlowFastStoppedInternalState>
     {
         /* Create some states to use in our state machine - The names are the most important thing really. There here inside this builder - just cos */

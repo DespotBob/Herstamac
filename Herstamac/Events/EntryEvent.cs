@@ -7,4 +7,8 @@
     public class ExitEvent : Event 
     { 
     }
+
+    public class DefaultEvent : Event
+    {
+    }
 }
