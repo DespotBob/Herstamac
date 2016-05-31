@@ -1,12 +1,16 @@
 # Herstamac
 
 A Hierachical Statemachine engine for .NET, with: 
-<ul>
-	<li>A fluent api for building a StateMachine definition.</li>
-	<li>An api fpr building a StateMachine using a classical object model. (Removed: will be added again later..s)</li>
-</ul>
 
-<h3> Example - A Machine Builder</h3>
+* A fluent api for building a StateMachine definition.
+* An api fpr building a StateMachine using a classical object model. (Removed: will be added again later....)
+
+
+### Installation 
+
+	Install-Package Herstamac
+
+### Example - A Machine Builder
 
 A MachineBuilder is a class that is used to produce a StateMachineDefinition.
 
@@ -103,13 +107,12 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
 			}
 		}
     
-<h3>Example 2 - Using a Machine builder to get a StateMachine running.</h3>
+### Example 2 - Using a Machine builder to get a StateMachine running.
 
 The MachineRunner is the engine that drives a state machine - it need two things:
-<ul>
-    <li>A MachineState</li>
-    <li>A MachineDefintion</li>
-</ul>
+
+* A MachineState
+* A MachineDefintion
         
 Luckily, these can be generated using a StateMachineBuilder.
 
@@ -166,9 +169,9 @@ Now we have all three things - Let's jam them into a MachineRunner, and dispatch
 	Rx'd Event2: EntryEvent
 	SM:FastSlow:827d132b-b371-4793-a1fd-df649cb34014 = State: Stopped - Entered log in the stopped state!
 
-<strong>Note:</strong><em> A Guid has been used to identfify this statemachine in the logs, because no unique identifier was specified. If you don't like Guids, specify something else to be used in is place.</em>
+**>Note:** A Guid has been used to identfify this statemachine in the logs, because no unique identifier was specified. If you don't like Guids, specify something else to be used in is place.</em>
 
-<h3>Using Event Interceptors</h3>
+### Using Event Interceptors
 
 Invent Interceptors can be added to a statemachine. These are run before any event is dispatched to the statemachine.
 
@@ -201,7 +204,7 @@ Invent Interceptors can be added to a statemachine. These are run before any eve
         });
 
 
-<h3>Using Default Event handlers</h3>
+### Using Default Event handlers
 
 Event handlers can be added to any state:
 
@@ -224,5 +227,5 @@ These events are:
 * Executed after every other event handler.
 * Are not execeuted on Entry and Exit events.
 
-<strong>Note:</strong>The first transition wins.
+**Note:** The first transition wins.
 

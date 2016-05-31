@@ -4,6 +4,8 @@ using System.Linq;
 
 namespace Herstamac
 {
+
+
     public static class MachineRunner
     {
         public static void Start<TInternalState>(MachineDefinition<TInternalState> machineDefinition
