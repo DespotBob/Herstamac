@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Herstamac
+namespace Herstamac.Fluent
 {
     public class StateBuilder<TInternalState> 
     {

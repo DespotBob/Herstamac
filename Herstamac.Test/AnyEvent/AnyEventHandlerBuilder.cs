@@ -1,8 +1,9 @@
 ﻿using System;
+using Herstamac.Fluent;
 
 namespace Herstamac.Test.DefaultHandlers
 {
-    public class AnyHandlerState : Herstamac.MachineState<object>
+    public class AnyHandlerState 
     {
         private Guid _guid = Guid.NewGuid();
 

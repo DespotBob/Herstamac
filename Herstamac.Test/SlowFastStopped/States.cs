@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Herstamac.Fluent;
+
 namespace Herstamac.Test.SlowFastStopped
 {
-     public class BaseState : Herstamac.BuilderState<SlowFastStoppedInternalState>
+     public class BaseState : BuilderState<SlowFastStoppedInternalState>
      {
          public BaseState(string name)
             : base(name)

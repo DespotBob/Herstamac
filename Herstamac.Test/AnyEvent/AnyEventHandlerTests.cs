@@ -20,7 +20,7 @@ namespace Herstamac.Test.DefaultHandlers
                 config.LogEventWith(x => x.ToString());
                 config.UniqueId.FromProperty(p => p.Id);
             });
-            MachineState = MachineDefinition.NewMachineState(new AnyHandlerState());
+            MachineState = MachineDefinition.NewMachineInstance(new AnyHandlerState());
 
             MachineRunner.Start(MachineDefinition, MachineState);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Herstamac.Fluent;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Herstamac.Test
@@ -59,7 +60,7 @@ namespace Herstamac.Test
                 .TransitionTo(On);
 
             MachineDefintion = machineBuilder.GetMachineDefinition();
-            MachineState     = MachineDefintion.NewMachineState(new OnOffInternalState());
+            MachineState     = MachineDefintion.NewMachineInstance(new OnOffInternalState());
             
 
             MachineRunner.Start(MachineDefintion, MachineState);

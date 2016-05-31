@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Herstamac.Fluent;
 
 namespace Herstamac.Test.HistoryState
 {
@@ -8,7 +9,7 @@ namespace Herstamac.Test.HistoryState
         public int count;
     }
 
-    public class HistoryStateMachineBuilder : Herstamac.MachineBuilder<HistoryState>
+    public class HistoryStateMachineBuilder : MachineBuilder<HistoryState>
     {
         public State RunningState = NewState("RunningState");
         public State SteerLeftState = NewState("SteerLeftState");

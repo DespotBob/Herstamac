@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Herstamac.Fluent;
+
 namespace Herstamac
 {
     /// <summary>
     /// Holds the definition of a StateMachine once it has been built.
     /// </summary>
-    public class MachineDefinition<TInternalState> 
+    public sealed class MachineDefinition<TInternalState> 
     {
         private readonly Action<string> _log;
 
@@ -58,7 +60,13 @@ namespace Herstamac
             Log(registeredStates);
         }
 
-        public IMachineState<TInternalState> NewMachineState(TInternalState state)
+
+        /// <summary>
+        /// Used to create a new StateMachine Instance
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public IMachineState<TInternalState> NewMachineInstance(TInternalState state)
         {
             return new MachineState<TInternalState>(StateHistories, state, InitialState);
         }

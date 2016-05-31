@@ -42,7 +42,7 @@ namespace Herstamac.Test
                 config.UniqueId.FromProperty(p => p.Id);
             });
 
-            MachineState = MachineDefinition.NewMachineState(new SlowFastStoppedInternalState());
+            MachineState = MachineDefinition.NewMachineInstance(new SlowFastStoppedInternalState());
         }
 
         [TestMethod]

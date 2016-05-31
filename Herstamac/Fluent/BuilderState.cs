@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Herstamac
+namespace Herstamac.Fluent
 {
-
     [DebuggerDisplay("State = {Name}")]
     public class BuilderState<TInternalState> : IState
     {

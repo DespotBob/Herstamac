@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Herstamac
+namespace Herstamac.Fluent
 { 
     public class MachineBuilder<TInternalState>
     {

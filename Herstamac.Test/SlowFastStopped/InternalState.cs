@@ -2,7 +2,7 @@
 
 namespace Herstamac.Test.SlowFastStopped
 {
-    public class SlowFastStoppedInternalState : Herstamac.MachineState<object> 
+    public class SlowFastStoppedInternalState 
     {
         private Guid _guid = Guid.NewGuid();
 

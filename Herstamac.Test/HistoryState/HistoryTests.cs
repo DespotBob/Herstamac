@@ -1,4 +1,5 @@
 ﻿using System;
+using Herstamac.Fluent;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Herstamac.Test.HistoryState
@@ -15,7 +16,7 @@ namespace Herstamac.Test.HistoryState
         {
             MachineBuilder = new HistoryStateMachineBuilder();
             MachineDefinition = MachineBuilder.GetMachineDefinition();
-            InternalState     = MachineDefinition.NewMachineState(new HistoryState());
+            InternalState     = MachineDefinition.NewMachineInstance(new HistoryState());
 
             // Given - The Machine is started
             MachineRunner.Start(MachineDefinition, InternalState);

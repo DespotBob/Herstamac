@@ -2,7 +2,7 @@
 
 namespace Herstamac
 {
-    public interface IMachineState<TInternalState>
+    public interface IMachineState<TInternalState> 
     {
         InternalState<TInternalState> CurrentState { get; }
 

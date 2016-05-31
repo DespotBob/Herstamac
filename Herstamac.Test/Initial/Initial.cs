@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Herstamac.Fluent;
 
 namespace Herstamac.Test.Initial
 {
@@ -18,7 +19,7 @@ namespace Herstamac.Test.Initial
 
     public class GoFaster { }
 
-    public class InitialMachineBuilder : Herstamac.MachineBuilder<IState>
+    public class InitialMachineBuilder : MachineBuilder<IState>
     {
         public Herstamac.State GrandState = NewState("GrandState");
 

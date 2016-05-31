@@ -2,9 +2,9 @@
 
 namespace Herstamac
 {
-    public class ImmutableTransistionDefinition<TInternalState>
+    public class TransistionDefinition<TInternalState>
     {
-        public ImmutableTransistionDefinition(Func<object, bool> typeGuardCondition
+        public TransistionDefinition(Func<object, bool> typeGuardCondition
             , Func<TInternalState, object, bool> guardCondition
             , Action<TInternalState, object, Action<string>> action
             , string transitionToState)
@@ -20,7 +20,4 @@ namespace Herstamac
         public Action<TInternalState, object, Action<string>> Action { get; }
         public string TransitionTo { get; }
     }
-
-
-  
 }

@@ -1,8 +1,9 @@
 ﻿using System;
+using Herstamac.Fluent;
 
 namespace Herstamac.Test.MultipleEvents
 {
-    public class MultipleEventsMachineState : MachineState<object>
+    public class MultipleEventsMachineState 
     {
         public Guid Id { get; set; }
     }

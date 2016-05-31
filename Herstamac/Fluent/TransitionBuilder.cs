@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Herstamac
+namespace Herstamac.Fluent
 {
     public class TransitionBuilder<TInternalState, TEvent> : 
         ITransitionBuilder<TInternalState, TEvent>, 

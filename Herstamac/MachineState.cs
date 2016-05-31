@@ -1,28 +1,17 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Herstamac
 {
-    public class MachineState<TInternalState> : IMachineState<TInternalState>
+    public sealed class MachineState<TInternalState> : IMachineState<TInternalState>
     {
         private InternalState<TInternalState> _currentState;
 
         private readonly TInternalState _currentInternalState;
 
-        private Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> _stateHistories 
-            = new Dictionary<InternalState<TInternalState>, InternalState<TInternalState>>();
+        private readonly Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> _stateHistories;
 
-        public MachineState() { }
-
-        public MachineState(TInternalState state) : this()
-        {
-            _currentInternalState = state;
-        }
-
-        public MachineState(
+        internal MachineState(
               Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> stateHistories
             , TInternalState state
             , InternalState<TInternalState> currentState )

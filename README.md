@@ -116,9 +116,8 @@ Luckily, these can be generated using a StateMachineBuilder.
         var machine = new SlowFastStoppedStateMachineBuilder();
 		
 		var machineDefinition =  machine.GetMachineDefinition();
-		var machineState = machineDefinition.NewMachineState(new SlowFastStoppedInternalState());
+		var machineState       = machineDefinition.NewMachineInstance(new SlowFastStoppedInternalState());
         
-
 You can use the config action when calling GetMachineDefinition():
 
         /* Now use the machineBuilder to produce a MachineDefinition */

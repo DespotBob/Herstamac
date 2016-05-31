@@ -2,7 +2,7 @@
 
 namespace Herstamac.Test.SlowFastStopped
 {
-    public class SlowFastStoppedStateMachineBuilder : MachineBuilder<SlowFastStoppedInternalState>
+    public class SlowFastStoppedStateMachineBuilder : Fluent.MachineBuilder<SlowFastStoppedInternalState>
     {
         /* Create some states to use in our state machine - The names are the most important thing really. There here inside this builder - just cos */
         public State Moving = NewState("Moving");
