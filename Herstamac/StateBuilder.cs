@@ -4,10 +4,10 @@ namespace Herstamac
 {
     public class StateBuilder<TInternalState> 
     {
-        private InternalState<TInternalState> _state;
-        private readonly Func<State, InternalState<TInternalState>> _lookup;
+        private BuilderState<TInternalState> _state;
+        private readonly Func<State, BuilderState<TInternalState>> _lookup;
 
-        public StateBuilder(InternalState<TInternalState> state, Func<State, InternalState<TInternalState>> lookup)
+        public StateBuilder(BuilderState<TInternalState> state, Func<State, BuilderState<TInternalState>> lookup)
         {
             _state = state;
             _lookup = lookup;

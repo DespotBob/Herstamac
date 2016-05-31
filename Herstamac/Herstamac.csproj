@@ -54,6 +54,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BuilderState.cs" />
+    <Compile Include="BuilderTransitionDefinition.cs" />
     <Compile Include="IState.cs" />
     <Compile Include="ITransitionBuilder.Fluent.cs" />
     <Compile Include="Events\Event.cs" />
@@ -62,10 +64,8 @@
     <Compile Include="MachineConfigure.cs" />
     <Compile Include="TransitionBuilder.cs" />
     <Compile Include="Handler.cs" />
-    <Compile Include="Handlers.cs" />
-    <Compile Include="IMachineDefinition.cs" />
     <Compile Include="IMachineState.cs" />
-    <Compile Include="InternalState.cs" />
+    <Compile Include="MachineState.cs" />
     <Compile Include="MachineBuilder.cs" />
     <Compile Include="MachineDefinition.cs" />
     <Compile Include="MachineRunner.cs" />

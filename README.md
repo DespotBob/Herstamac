@@ -29,7 +29,6 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
 				RegisterState(Stopped);
 				RegisterState(Slow);
 				RegisterState(Fast);
-				RegisterState(Stopped);
 				RegisterState(Moving);
 
 				/* Define a state Hierachy....*/
@@ -117,7 +116,7 @@ Luckily, these can be generated using a StateMachineBuilder.
         var machine = new SlowFastStoppedStateMachineBuilder();
 		
 		var machineDefinition =  machine.GetMachineDefinition();
-		var machineStates = machine.NewMachineState(new SlowFastStoppedInternalState());
+		var machineState = machineDefinition.NewMachineState(new SlowFastStoppedInternalState());
         
 
 You can use the config action when calling GetMachineDefinition():
@@ -140,9 +139,8 @@ You can use the config action when calling GetMachineDefinition():
 
 Now we have all three things - Let's jam them into a MachineRunner, and dispatch an event into the state machine.
 
-         MachineRunner.Dispatch(MachineDefinition, MachineState, new SlowFastStoppedStateMachineBuilder.GoFaster());
+        MachineRunner.Dispatch(machineDefinition, machineState, new SlowFastStoppedStateMachineBuilder.GoFaster());
         Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefinition, machine.Stopped));
-    
     
 <h3>Example - Log output </h3>
 

@@ -23,7 +23,7 @@ namespace Herstamac.Test
                 x.Logger((str) => Console.WriteLine(str));
 			});
 
-            MachineState = MachineBuilder.NewMachineState(new MultipleEventsMachineState());
+            MachineState = MachineDefinition.NewMachineState(new MultipleEventsMachineState());
 
             MachineRunner.Start(MachineDefinition, MachineState);
         }

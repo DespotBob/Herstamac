@@ -58,9 +58,9 @@ namespace Herstamac.Test
                 .When<SwitchDown>()
                 .TransitionTo(On);
 
-
-            MachineState = machineBuilder.NewMachineState(new OnOffInternalState());
             MachineDefintion = machineBuilder.GetMachineDefinition();
+            MachineState     = MachineDefintion.NewMachineState(new OnOffInternalState());
+            
 
             MachineRunner.Start(MachineDefintion, MachineState);
 

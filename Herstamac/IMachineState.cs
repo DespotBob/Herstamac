@@ -3,7 +3,6 @@
 namespace Herstamac
 {
     public interface IMachineState<TInternalState>
-
     {
         InternalState<TInternalState> CurrentState { get; }
 

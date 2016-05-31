@@ -21,7 +21,7 @@ namespace Herstamac.Test.MultipleEvents
                 config.LogEventWith(x => x.ToString());
                 config.UniqueId.FromProperty(p => p.Id);
             });
-            MachineState = MachineBuilder.NewMachineState(new MultipleEventsMachineState());
+            MachineState = MachineDefinition.NewMachineState(new MultipleEventsMachineState());
 
             MachineRunner.Start(MachineDefinition, MachineState);
         }

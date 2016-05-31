@@ -2,7 +2,6 @@
 
 namespace Herstamac
 {
-
     public class MachineConfiguration<TInternalState>
     {
         internal Func<object, string> LogEvents = (x) => string.Empty;

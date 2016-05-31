@@ -29,13 +29,20 @@ namespace Herstamac.Test
 
             MachineDefinition = machine.GetMachineDefinition( config => 
             {
+                /* Name the Statemachine */
                 config.Name("FastSlow");
+
+                /* Define where the logging information is going! */
                 config.Logger(x => Console.WriteLine(x));
+
+                /* Define a function that will be used to serialise an event to a string */
                 config.LogEventWith(x => x.ToString());
+
+                /* Hmmm - Every state machine needs a unique Id - Get this one from here, otherwise it's a GUID! */
                 config.UniqueId.FromProperty(p => p.Id);
             });
 
-            MachineState = machine.NewMachineState(new SlowFastStoppedInternalState());
+            MachineState = MachineDefinition.NewMachineState(new SlowFastStoppedInternalState());
         }
 
         [TestMethod]
@@ -92,7 +99,6 @@ namespace Herstamac.Test
 
             MachineRunner.Dispatch(MachineDefinition, MachineState, new SlowFastStoppedStateMachineBuilder.GoStop());
             Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefinition, machine.Stopped));
-
         }
     }
 }

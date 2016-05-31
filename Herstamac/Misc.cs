@@ -8,7 +8,9 @@ namespace Herstamac
 {
     public static class Misc<TInternalState>
     {
-        public static List<InternalState<TInternalState>> FindAllStates(IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations, InternalState<TInternalState> childState)
+        public static List<InternalState<TInternalState>> FindAllStates(
+            IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations,
+            InternalState<TInternalState> childState)
         {
             if (childState == null)
             {
@@ -32,7 +34,9 @@ namespace Herstamac
             return _nextStates.ToList();
         }
 
-        public static InternalState<TInternalState> FindParentState(IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations, InternalState<TInternalState> childState )
+        public static InternalState<TInternalState> FindParentState(
+            IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations,
+            InternalState<TInternalState> childState )
         {
             if (relations.ContainsKey(childState))
             {

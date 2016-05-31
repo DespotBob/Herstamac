@@ -21,7 +21,6 @@ namespace Herstamac.Test.SlowFastStopped
             RegisterState(Stopped);
             RegisterState(Slow);
             RegisterState(Fast);
-            RegisterState(Stopped);
             RegisterState(Moving);
 
             /* Define a state Hierachy....*/

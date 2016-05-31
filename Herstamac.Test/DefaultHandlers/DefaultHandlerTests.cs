@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Herstamac;
 
 namespace Herstamac.Test.DefaultHandlers
 {
@@ -21,7 +22,7 @@ namespace Herstamac.Test.DefaultHandlers
                 config.LogEventWith(x => x.ToString());
                 config.UniqueId.FromProperty(p => p.Id);
             });
-            MachineState = MachineBuilder.NewMachineState(new DefaultHandlerState());
+            MachineState = MachineDefinition.NewMachineState(new DefaultHandlerState());
 
             MachineRunner.Start(MachineDefinition, MachineState);
         }

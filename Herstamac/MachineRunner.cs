@@ -6,34 +6,50 @@ namespace Herstamac
 {
     public static class MachineRunner
     {
-        public static void Start<TInternalState>(MachineDefinition<TInternalState> machineDefinition, IMachineState<TInternalState> internalState)
+        public static void Start<TInternalState>(MachineDefinition<TInternalState> machineDefinition
+            , IMachineState<TInternalState> internalState)
         {
             Dispatch(machineDefinition, internalState, new Events.EntryEvent());
         }
 
-        public static void Dispatch<TInternalState, TEvent>(MachineDefinition<TInternalState> machineDefinition, IMachineState<TInternalState> machineState, TEvent evnt)
+        public static void Dispatch<TInternalState, TEvent>(MachineDefinition<TInternalState> machineDefinition
+            , IMachineState<TInternalState> machineState
+            , TEvent evnt)
         {
+            var lookUp = Find(machineDefinition);
+
             Dispatch(evnt
                 , machineState
                 , machineState.CurrentState
-                , machineDefinition.ParentStates
+                , machineDefinition.ParentStates 
                 , machineDefinition.EventInterceptors
                 , machineDefinition.Config
-                , true);
+                , true
+                , lookUp);
         }
 
-        public static bool IsInState<TInternalState>(IMachineState<TInternalState> internalState, MachineDefinition<TInternalState> machineDefinition, State state)
+        public static bool IsInState<TInternalState>(IMachineState<TInternalState> internalState, 
+            MachineDefinition<TInternalState> machineDefinition,
+            State state)
         {
             return Misc<TInternalState>.FindAllStates(machineDefinition.ParentStates, internalState.CurrentState)
                 .Any(currentState => currentState.Name == state.Name);
         }
 
-        private static void Dispatch<TInternalState, TEvent>(TEvent evnt, IMachineState<TInternalState> internalState
+        private static Func<string, InternalState<TInternalState>> Find<TInternalState>
+            ( MachineDefinition<TInternalState> machineDefinition )
+        {
+            return (name) => machineDefinition.LookupRegisteredState(name);
+        }
+
+        private static void Dispatch<TInternalState, TEvent>(TEvent evnt
+           , IMachineState<TInternalState> internalState
            , InternalState<TInternalState> currentState
            , IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations
            , IEnumerable<Func<object, object>> eventInterceptors
            , MachineConfiguration<TInternalState> config
-           , bool outerTransitionsTakePrecedence)
+           , bool outerTransitionsTakePrecedence
+           , Func<string, InternalState<TInternalState>> lookup)
         {
             var currentStates = Misc<TInternalState>.FindAllStates(relations, currentState);
 
@@ -42,11 +58,11 @@ namespace Herstamac
                 currentStates.Reverse();
             }
 
-            var nextState = DispatchToStates(evnt, internalState, currentStates, eventInterceptors, config);
+            var nextState = DispatchToStates(evnt, internalState, currentStates, eventInterceptors, config, lookup);
 
             if (nextState != null && nextState != currentStates.Last())
             {
-                nextState = TransitionTo( (object) evnt, internalState, relations, nextState, eventInterceptors, false, config);
+                nextState = TransitionTo( (object) evnt, internalState, relations, nextState, eventInterceptors, false, config, lookup);
             }
 
             if (nextState != null)
@@ -62,7 +78,8 @@ namespace Herstamac
            , InternalState<TInternalState> transitionToState
            , IEnumerable<Func<object, object>> eventInterceptors
            , bool exitInnerStatesFirst
-           , MachineConfiguration<TInternalState>  config)
+           , MachineConfiguration<TInternalState> config
+           , Func<string, InternalState<TInternalState>> lookup)
         {
             config.Logger(string.Format("SM:{0}:{1} = State: {2} -> {3} on ^{4} = '{5}'"
                 , config.Name
@@ -92,15 +109,15 @@ namespace Herstamac
             }
 
             // Dispatch and do not transition...
-            var newState = DispatchToStates(new Events.ExitEvent(), machineState, exitConditionsToRun, eventInterceptors, config);
+            var newState = DispatchToStates(new Events.ExitEvent(), machineState, exitConditionsToRun, eventInterceptors, config, lookup);
 
             machineState.ChangeState(_nextStates.Last());
 
             // Dispath entry event - transition if neccesary  and do not transition...
-            newState = DispatchToStates(new Herstamac.Events.EntryEvent(), machineState, entryConditionsToRun, eventInterceptors, config);
+            newState = DispatchToStates(new Herstamac.Events.EntryEvent(), machineState, entryConditionsToRun, eventInterceptors, config, lookup);
             if (newState != null)
             {
-                transitionToState = TransitionTo(evnt, machineState, relations, newState, eventInterceptors, exitInnerStatesFirst, config);
+                transitionToState = TransitionTo(evnt, machineState, relations, newState, eventInterceptors, exitInnerStatesFirst, config, lookup);
             }
 
             return transitionToState;
@@ -109,7 +126,9 @@ namespace Herstamac
         /// <summary>
         /// Runs through all the current states - and updates the state histories to the current ones.
         /// </summary>
-        private static void UpdateStateHistories<TInternalState>(IMachineState<TInternalState> internalState, IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> parentStates, InternalState<TInternalState> nextState)
+        private static void UpdateStateHistories<TInternalState>(IMachineState<TInternalState> internalState, 
+            IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> parentStates,
+            InternalState<TInternalState> nextState)
         {
             foreach (var state in Misc<TInternalState>.FindAllStates(parentStates, nextState))
             {
@@ -140,10 +159,11 @@ namespace Herstamac
             , IMachineState<TInternalState> internalState
             , IEnumerable<InternalState<TInternalState>> statesToDispatchTo
             , IEnumerable<Func<object, object>> eventInterceptors
-            , MachineConfiguration<TInternalState> config)
+            , MachineConfiguration<TInternalState> config
+            , Func<string, InternalState<TInternalState>> lookup)
         {
             TEvent evntToDispatch = ExecuteInterceptorsForEvent(evnt, eventInterceptors);
-
+            
             if (evntToDispatch == null)
             {
                 // Do not dispatch a null event!
@@ -153,23 +173,24 @@ namespace Herstamac
 
             foreach (var currentState in statesToDispatchTo)
             {
-                if (currentState._handlers.ContainsKey(evnt.GetType()))
+                if (currentState.Handlers.ContainsKey(evnt.GetType()))
                 {
-                    finalTransitionState = Execute(evnt, internalState, config, finalTransitionState, currentState);
+                    finalTransitionState = Execute(evnt, internalState, config, finalTransitionState, currentState, lookup);
                 }
                 else if( evnt.GetType() != typeof(Events.EntryEvent) & evnt.GetType() != typeof( Events.ExitEvent ))
                 {
-                    if (currentState._handlers.ContainsKey(typeof(Events.DefaultEvent)))
+                    if (currentState.Handlers.ContainsKey(typeof(Events.DefaultEvent)))
                     {
-                        finalTransitionState = Execute( new Events.DefaultEvent(), internalState, config, finalTransitionState, currentState);
+                        finalTransitionState = Execute( new Events.DefaultEvent(), internalState, config, finalTransitionState, currentState, lookup);
                     }
                 }
 
                 if (evnt.GetType() != typeof(Events.EntryEvent) & evnt.GetType() != typeof(Events.ExitEvent))
                 {
-                    if (currentState._handlers.ContainsKey(typeof(Events.AnyEvent)))
+                    // Always run an AnyEvent() - 
+                    if (currentState.Handlers.ContainsKey(typeof(Events.AnyEvent)))
                     {
-                        finalTransitionState = Execute(new Events.AnyEvent(), internalState, config, finalTransitionState, currentState);
+                        finalTransitionState = Execute(new Events.AnyEvent(), internalState, config, finalTransitionState, currentState, lookup);
                     }
                 }
                 // Place holder...
@@ -179,15 +200,17 @@ namespace Herstamac
             return finalTransitionState;
         }
 
-        private static InternalState<TInternalState> Execute<TInternalState, TEvent>(TEvent evnt, IMachineState<TInternalState> internalState, MachineConfiguration<TInternalState> config, InternalState<TInternalState> finalTransitionState, InternalState<TInternalState> currentState)
+        private static InternalState<TInternalState> Execute<TInternalState, TEvent>(TEvent evnt, 
+            IMachineState<TInternalState> internalState, 
+            MachineConfiguration<TInternalState> config,
+            InternalState<TInternalState> finalTransitionState,
+            InternalState<TInternalState> currentState,
+            Func<string, InternalState<TInternalState>> lookup)
         {
-            var handler = currentState._handlers[evnt.GetType()];
+            var handler = currentState.Handlers[evnt.GetType()];
 
-            Action<string> log = str => config.Logger(string.Format("SM:{0}:{1} = State: {2} - {3}"
-                , config.Name
-                , config.GetUniqueId(internalState.CurrentInternalState)
-                , currentState.Name
-                , str));
+            Action<string> log =
+                str => config.Logger($"SM:{config.Name}:{config.GetUniqueId(internalState.CurrentInternalState)} = State: {currentState.Name} - {str}");
 
             foreach (var action in handler.TransistionDefinitions)
             {
@@ -200,12 +223,12 @@ namespace Herstamac
 
                     if (action.TransitionTo != null)
                     {
-                        finalTransitionState = finalTransitionState ?? action.TransitionTo;
+                        finalTransitionState = finalTransitionState ?? lookup( action.TransitionTo );
                     }
                 }
             }
 
             return finalTransitionState;
-        }
+        } 
     }
 }

@@ -7,84 +7,82 @@ namespace Herstamac
     /// <summary>
     /// Holds the definition of a StateMachine once it has been built.
     /// </summary>
-    public class MachineDefinition<TInternalState>
+    public class MachineDefinition<TInternalState> 
     {
-        IReadOnlyList<InternalState<TInternalState>> _registeredState;
-        IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> _parentStates;
-        IReadOnlyList<Func<object, object>> _eventInterceptors;
-
         private readonly Action<string> _log;
-
-        MachineConfiguration<TInternalState> _config;
 
         internal MachineDefinition(
             IReadOnlyList<InternalState<TInternalState>> registeredStates,
-            IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> parentStates,
+            IReadOnlyDictionary<string, string> parentStates,
             IReadOnlyList<Func<object, object>> eventInterceptors,
-            MachineConfiguration<TInternalState> config )
+            MachineConfiguration<TInternalState> config,
+            IState initialState,
+            Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>> stateHistories )            
         {
             if (registeredStates == null)
             {
-                throw new ArgumentNullException("RegistererState");
+                throw new ArgumentNullException(nameof(registeredStates));
             }
 
             if (parentStates == null)
             {
-                throw new ArgumentNullException("parentStates");
+                throw new ArgumentNullException(nameof(parentStates));
             }
 
             if (eventInterceptors == null)
             {
-                throw new ArgumentNullException("EventInterceptors");
+                throw new ArgumentNullException(nameof(eventInterceptors));
             }
 
-
-            _registeredState = registeredStates;
-            _parentStates = parentStates;
-            _eventInterceptors = eventInterceptors;
-            _log = config.Logger;
-            _config = config;
-
-            Log();
-        }
-
-        internal IReadOnlyList<InternalState<TInternalState>> RegisteredState
-        {
-            get
+            if (initialState == null)
             {
-                return _registeredState;
+                throw new ArgumentNullException(nameof(initialState));
             }
-        }
 
-        internal IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> ParentStates
-        {
-            get
+            if (stateHistories == null)
             {
-                return _parentStates;
+                throw new ArgumentNullException(nameof(stateHistories));
             }
+
+            _log = config.Logger;            
+
+            RegisteredState = registeredStates;
+            EventInterceptors = eventInterceptors;
+            Config = config;
+            InitialState =  LookupRegisteredState( initialState.Name);
+            StateHistories = stateHistories.ToDictionary(x => LookupRegisteredState(x.Key.Name), x => LookupRegisteredState(x.Value.Name)); ;
+            ParentStates = parentStates.ToDictionary(
+                    x => LookupRegisteredState(x.Key),
+                    x => LookupRegisteredState(x.Value ));
+
+            Log(registeredStates);
         }
 
-        internal IReadOnlyList<Func<object, object>> EventInterceptors
+        public IMachineState<TInternalState> NewMachineState(TInternalState state)
         {
-            get
-            {
-                return _eventInterceptors;
-            }
+            return new MachineState<TInternalState>(StateHistories, state, InitialState);
         }
 
-        internal MachineConfiguration<TInternalState> Config
-        {
-            get
-            {
-                return _config;
-            }
-        }
+        private IReadOnlyList<InternalState<TInternalState>> RegisteredState { get; }
 
-        private void Log()
+        internal InternalState<TInternalState> LookupRegisteredState(string name) =>
+            RegisteredState.ToDictionary(x => x.Name, x => x)[name];
+        
+        internal IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> ParentStates { get; }
+
+        internal IReadOnlyList<Func<object, object>> EventInterceptors { get; }
+
+        internal InternalState<TInternalState> InitialState { get;}
+
+        internal MachineConfiguration<TInternalState> Config { get; }
+
+        public Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> StateHistories { get; }
+
+        private void Log(IReadOnlyList<InternalState<TInternalState>> registeredStates )
         {
-            _registeredState
+            registeredStates
                 .ToList()
-                .ForEach( x => _config.Logger(string.Format("SM:{0} - Registered state: '{1}', with {2} Handlers", _config.Name, x.Name, x.Handlers.Keys.Count())));
+                .ForEach( x => Config.Logger(string.Format($"SM:{Config.Name} - Registered state: '{x.Name}', with {x.Handlers.Keys.Count()} Handlers")));
         }
     }
 }

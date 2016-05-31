@@ -8,93 +8,49 @@ namespace Herstamac
     [DebuggerDisplay("State = {Name}")]
     public class State : IState
     {
-        private readonly string _name;
-
         public State(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
-            _name = name;
+
+            Name = name;
         }
 
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-        }
+        public string Name { get; }
     }
 
-
-    [DebuggerDisplay("State = {Name}")]
-    public class InternalState<TInternalState> : IInternalState<TInternalState>
+    [DebuggerDisplay("InternalState = {Name}")]
+    public class InternalState<TInternalState>
     {
         public class ListOfHandlers
         {
-            public List<TransitionDefinition<TInternalState>> TransistionDefinitions = new List<TransitionDefinition<TInternalState>>();
-        }
+            public IReadOnlyList<ImmutableTransistionDefinition<TInternalState>> TransistionDefinitions { get; }
 
-        private string _name;
-
-        public Dictionary<Type, ListOfHandlers> _handlers = new Dictionary<Type, ListOfHandlers>();
-
-        public InternalState(string name)
-        {
-            if (string.IsNullOrEmpty(name))
+            public ListOfHandlers( List<ImmutableTransistionDefinition<TInternalState>> handlers)
             {
-                throw new ArgumentNullException("name", "A state must have a name.");
+                TransistionDefinitions = handlers.AsReadOnly();
             }
-
-            _name = name;
         }
 
-        public string Name {  get { return _name; }}
-
-        public Dictionary<Type, ListOfHandlers> Handlers { get { return _handlers; } }    
-
-        internal TransitionDefinition<TInternalState> AddTransitionDefinitionToState<TEvent,TAsHandler>()
-               where TEvent : class
+        public InternalState(BuilderState<TInternalState> state)
         {
-            return AddTransitionDefinitionToState<TEvent,TAsHandler>((s, e) => true);
-        }
+            Name = state.Name;
 
-        internal TransitionDefinition<TInternalState> AddTransitionDefinitionToState<TEvent>()
-               where TEvent : class
-        {
-            return AddTransitionDefinitionToState<TEvent>((s, e) => true);
-        }
-
-        internal TransitionDefinition<TInternalState> AddTransitionDefinitionToState<TEvent>(Func<TInternalState, TEvent, bool> guard)
-               where TEvent : class
-        {
-            return AddTransitionDefinitionToState<TEvent,TEvent>(guard);
-        }
-
-        internal TransitionDefinition<TInternalState> AddTransitionDefinitionToState<T1,TAsEvent>(Func<TInternalState, TAsEvent, bool> guard)
-              where T1 : class
-        {
-            if (_handlers.Keys.Contains(typeof(T1)) == false)
+            var t = state.Handlers.Select(x => new
             {
-                _handlers.Add(typeof(T1), new ListOfHandlers());
-            }
+                type = x.Key,
+                handlers = x.Value.TransistionDefinitions.Select(
+                       y => new ImmutableTransistionDefinition<TInternalState>(y.TypeGuardCondition, y.GuardCondition, y.Action, y?.TransitionTo?.Name))
+                       .ToList()
+            }).ToList();
 
-            var h = _handlers[typeof(T1)];
-
-            var transDefinition = new TransitionDefinition<TInternalState>( TypedGuard<TAsEvent>, (s, o) => guard(s, (TAsEvent)o), null, null);
-
-            h.TransistionDefinitions.Add(transDefinition);
-
-            return transDefinition;
+            Handlers = t.ToDictionary(x => x.type, x => new ListOfHandlers( x.handlers));
         }
 
-        private static bool TypedGuard<TEvent>(object obj)
-        {
-            return obj.GetType() == typeof(TEvent);
-        }
+        public string Name { get; }
+
+        public Dictionary<Type, ListOfHandlers> Handlers { get; }
     }
-
-
 }

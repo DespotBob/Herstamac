@@ -6,11 +6,14 @@ namespace Herstamac
 { 
     public class MachineBuilder<TInternalState>
     {
-        public IMachineState<TInternalState> _MachineState = new MachineState<TInternalState>();
+        private IState _currentState = null;
 
-        private List<InternalState<TInternalState>> RegisteredStates = new List<InternalState<TInternalState>>();
+        private Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>> _stateHistory { get; } = new Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>>();
 
-        private Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> parentStates = new Dictionary<InternalState<TInternalState>, InternalState<TInternalState>>();
+        private List<BuilderState<TInternalState>> RegisteredStates = new List<BuilderState<TInternalState>>();
+
+        private Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>> ParentStates 
+            = new Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>>();
 
         private readonly List<Func<object, object>> EventInterceptors;
 
@@ -19,21 +22,21 @@ namespace Herstamac
             EventInterceptors = new List<Func<object, object>>();
         }
 
-        public InternalState<TInternalState> RegisterState(string name)
+        private BuilderState<TInternalState> RegisterState(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
             }
 
-            var newState = new InternalState<TInternalState>(name);
+            var newState = new BuilderState<TInternalState>(name);
 
             RegisteredStates.Add(newState);
 
             return newState;
         }
 
-        public InternalState<TInternalState> RegisterState(State stateToRegister)
+        public BuilderState<TInternalState> RegisterState(State stateToRegister)
         {
             return RegisterState(stateToRegister.Name);
         }
@@ -52,9 +55,9 @@ namespace Herstamac
                 throw new ApplicationException("Cannot build state on an unregistered state!");
             }
 
-            if (_MachineState.CurrentState == null || Misc<TInternalState>.FindAllStates(this.parentStates, _MachineState.CurrentState).Count == 0)
-            {
-                _MachineState.ChangeState(lookedUp);
+            if (_currentState == null)
+            { 
+                _currentState = stateToBuildWith;
             }
 
             return new StateBuilder<TInternalState>(lookedUp, Lookup);
@@ -77,7 +80,7 @@ namespace Herstamac
                 throw new ArgumentOutOfRangeException("childState", "The child state cannot be the same as the parent state in a sub-state relationship!");
             }
 
-            parentStates.Add( Lookup(childState), Lookup(parentState()));
+            ParentStates.Add( Lookup(childState), Lookup(parentState()));
         }
 
         public void RegisterHistoryState(State historyState, State initialState)
@@ -97,8 +100,7 @@ namespace Herstamac
                 throw new ArgumentOutOfRangeException("initialState", "The initialState state cannot be the same as the historyState state when registering a history start!");
             }
 
-            _MachineState.StateHistory.Add( Lookup( historyState), Lookup(initialState));
-
+            _stateHistory.Add( Lookup( historyState), Lookup(initialState));
         }
 
         public void AddEventInterceptor(Func<object, object> interceptor)
@@ -113,7 +115,15 @@ namespace Herstamac
 
         public MachineDefinition<TInternalState> GetMachineDefinition()
         {
-            return new MachineDefinition<TInternalState>(RegisteredStates, parentStates, EventInterceptors, new MachineConfiguration<TInternalState>() );
+            var states = ConvertStates();
+            var parentStates = ConvertParentStates();
+
+            return new MachineDefinition<TInternalState>(states
+                , parentStates
+                , EventInterceptors
+                , new MachineConfiguration<TInternalState>()
+                , _currentState
+                , _stateHistory );
         }
 
         public MachineDefinition<TInternalState> GetMachineDefinition(Action<IMachineConfigure<TInternalState>> configure)
@@ -122,14 +132,15 @@ namespace Herstamac
 
             configure(config);
 
-            return new MachineDefinition<TInternalState>(RegisteredStates, parentStates, EventInterceptors, config.Results);
-        }
+            var states = ConvertStates();
+            var parentStates = ConvertParentStates();
 
-        public IMachineState<TInternalState> NewMachineState( TInternalState state)
-        {
-            IMachineState<TInternalState> t = new MachineState<TInternalState>( _MachineState.StateHistory, state,  _MachineState.CurrentState);
-
-            return t;
+            return new MachineDefinition<TInternalState>(states
+                , parentStates
+                , EventInterceptors
+                , config.Results
+                , _currentState
+                , _stateHistory);
         }
 
         public static State NewState(string name)
@@ -137,9 +148,20 @@ namespace Herstamac
             return new State(name);
         }
 
-        public InternalState<TInternalState> Lookup(IState state)
+        public BuilderState<TInternalState> Lookup(IState state)
         {
             return RegisteredStates.First(x => x.Name == state.Name);
+        }
+
+        private IReadOnlyDictionary<string, string> ConvertParentStates()
+        {
+            return ParentStates.ToDictionary(x => x.Key.Name, x => x.Value.Name);
+        }
+
+        private IReadOnlyList<InternalState<TInternalState>> ConvertStates()
+        {
+            return RegisteredStates.Select(x => new InternalState<TInternalState>(x))
+                .ToList().AsReadOnly();
         }
     } 
 }

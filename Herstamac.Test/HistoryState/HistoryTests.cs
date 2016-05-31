@@ -7,15 +7,15 @@ namespace Herstamac.Test.HistoryState
     public class UnitTest1
     {
         MachineDefinition<HistoryState> MachineDefinition;
-        IMachineState<HistoryState>      InternalState;
-        HistoryStateMachineBuilder       MachineBuilder;
+        IMachineState<HistoryState>     InternalState;
+        HistoryStateMachineBuilder      MachineBuilder;
 
         [TestInitialize]
         public void GivenANewlyInitialisedSM()
         {
             MachineBuilder = new HistoryStateMachineBuilder();
             MachineDefinition = MachineBuilder.GetMachineDefinition();
-            InternalState = MachineBuilder.NewMachineState(new HistoryState());
+            InternalState     = MachineDefinition.NewMachineState(new HistoryState());
 
             // Given - The Machine is started
             MachineRunner.Start(MachineDefinition, InternalState);

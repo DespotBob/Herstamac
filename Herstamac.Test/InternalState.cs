@@ -18,7 +18,7 @@ namespace Herstamac.Test
             MachineBuilder = new InitialMachineBuilder();
 
             MachineDefinition = MachineBuilder.GetMachineDefinition();
-            MachineState = MachineBuilder.NewMachineState(new State());
+            MachineState      = MachineDefinition.NewMachineState(new State());
         }
 
         [TestMethod]

@@ -9,10 +9,10 @@ namespace Herstamac
         ITransistionBuilderEnd<TInternalState,TEvent>
         where TEvent : class
     {
-        TransitionDefinition<TInternalState> _td;
-        private readonly Func<State, InternalState<TInternalState>>_lookup;
+        private readonly BuilderTransitionDefinition<TInternalState> _td;
+        private readonly Func<State, BuilderState<TInternalState>>_lookup;
 
-        public TransitionBuilder(TransitionDefinition<TInternalState> td, Func<State, InternalState<TInternalState>> lookup)
+        public TransitionBuilder(BuilderTransitionDefinition<TInternalState> td, Func<State, BuilderState<TInternalState>> lookup)
         {
             _td = td;
             _lookup = lookup;

@@ -67,7 +67,7 @@
     <Compile Include="InternalState.cs" />
     <Compile Include="MultipleEvents\MultipleEventsStateMachine.cs" />
     <Compile Include="OnOffStateMachine.cs" />
-    <Compile Include="SlowFastStopped.cs" />
+    <Compile Include="SlowFastStopped\SlowFastStoppedTests.cs" />
     <Compile Include="SlowFastStopped\InternalState.cs" />
     <Compile Include="SlowFastStopped\SlowFastStoppedStateMachine.cs" />
     <Compile Include="SlowFastStopped\States.cs" />

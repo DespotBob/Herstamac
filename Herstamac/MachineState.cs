@@ -12,23 +12,24 @@ namespace Herstamac
 
         private readonly TInternalState _currentInternalState;
 
-        private Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> _stateHistories = new Dictionary<InternalState<TInternalState>, InternalState<TInternalState>>();
+        private Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> _stateHistories 
+            = new Dictionary<InternalState<TInternalState>, InternalState<TInternalState>>();
 
-        public MachineState()
-        {
-        }
+        public MachineState() { }
 
         public MachineState(TInternalState state) : this()
         {
             _currentInternalState = state;
         }
 
-        public MachineState(Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> stateHistories, TInternalState state, InternalState<TInternalState> currentState )
-            : this()
+        public MachineState(
+              Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> stateHistories
+            , TInternalState state
+            , InternalState<TInternalState> currentState )
         {
             _stateHistories = stateHistories;
             _currentInternalState = state;
-            _currentState = currentState;
+            _currentState = currentState;   
         }
 
         InternalState<TInternalState> IMachineState<TInternalState>.CurrentState

@@ -2,34 +2,25 @@
 
 namespace Herstamac
 {
-    public class TransitionDefinition<TInternalState>
+    public class ImmutableTransistionDefinition<TInternalState>
     {
-        public Func<object, bool> _typeGuardCondition;
-
-        public Func<TInternalState, object, bool> _guardCondition;
-        public Action<TInternalState, object, Action<string> > _action;
-        public InternalState<TInternalState> _transitionTo;
-
-        public TransitionDefinition( Func<object, bool> typeGuardCondition, Func<TInternalState, object, bool> guardCondition, Action<TInternalState, object, Action<string>> action, InternalState<TInternalState> transitionToState)
+        public ImmutableTransistionDefinition(Func<object, bool> typeGuardCondition
+            , Func<TInternalState, object, bool> guardCondition
+            , Action<TInternalState, object, Action<string>> action
+            , string transitionToState)
         {
-            if (typeGuardCondition == null)
-            {
-                throw new Exception("typeGuardCondition");
-            }
-
-            if (guardCondition == null)
-            {
-                throw new Exception( "guardCondition" );
-            }
-
-            _typeGuardCondition = typeGuardCondition;
-            _guardCondition = guardCondition;
-            _action = action;
-            _transitionTo = transitionToState;
+            TypeGuardCondition = typeGuardCondition;
+            GuardCondition = guardCondition;
+            Action = action;
+            TransitionTo = transitionToState;
         }
 
-        public Func<TInternalState, object, bool> GuardCondition { get { return _guardCondition; } set { _guardCondition = value; } }
-        public Action<TInternalState, object, Action<string> > Action { get { return _action; } set { _action = value; } }
-        public InternalState<TInternalState> TransitionTo { get { return _transitionTo; } }
+        public Func<object, bool> TypeGuardCondition { get; }
+        public Func<TInternalState, object, bool> GuardCondition { get; }
+        public Action<TInternalState, object, Action<string>> Action { get; }
+        public string TransitionTo { get; }
     }
+
+
+  
 }
