@@ -4,8 +4,6 @@ using System.Linq;
 
 namespace Herstamac
 {
-
-
     public static class MachineRunner
     {
         public static void Start<TInternalState>(MachineDefinition<TInternalState> machineDefinition
@@ -36,6 +34,30 @@ namespace Herstamac
         {
             return Misc<TInternalState>.FindAllStates(machineDefinition.ParentStates, internalState.CurrentState)
                 .Any(currentState => currentState.Name == state.Name);
+        }
+
+
+        public static IEnumerable<InternalState<TInternalState>> CurrentStates<TInternalState>( IMachineState<TInternalState> internalState, MachineDefinition<TInternalState> machineDefinition )
+        {
+            return Misc<TInternalState>.FindAllStates(machineDefinition.ParentStates, internalState.CurrentState);
+        }
+
+        /// <summary>
+        /// Returns a list of of the Events that the state machine will currently perform an action on.
+        /// </summary>
+        /// <typeparam name="TInternalState"></typeparam>
+        /// <param name="internalState"></param>
+        /// <param name="machineDefinition"></param>
+        /// <returns>Will not return Events.EntryEvents or exit Events.ExitEvent events</returns>
+        public static IEnumerable<Type> CurrentlyActionableEvents<TInternalState>(IMachineState<TInternalState> internalState, MachineDefinition<TInternalState> machineDefinition)
+        {
+            return Misc<TInternalState>.FindAllStates(machineDefinition.ParentStates, internalState.CurrentState)
+                .SelectMany(x => x.Handlers)
+                .Select(x => x.Key)
+                .Where(x => x != typeof(Herstamac.Events.EntryEvent))
+                .Where(x => x != typeof(Herstamac.Events.ExitEvent))
+                .Distinct()
+                .ToList();
         }
 
         private static Func<string, InternalState<TInternalState>> Find<TInternalState>

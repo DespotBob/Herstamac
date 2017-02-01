@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Herstamac
 {
-    public static class Misc<TInternalState>
+
+    internal static class Misc<TInternalState>
     {
-        public static List<InternalState<TInternalState>> FindAllStates(
+        internal static List<InternalState<TInternalState>> FindAllStates(
             IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations,
             InternalState<TInternalState> childState)
         {
@@ -34,7 +33,7 @@ namespace Herstamac
             return _nextStates.ToList();
         }
 
-        public static InternalState<TInternalState> FindParentState(
+        internal static InternalState<TInternalState> FindParentState(
             IReadOnlyDictionary<InternalState<TInternalState>, InternalState<TInternalState>> relations,
             InternalState<TInternalState> childState )
         {

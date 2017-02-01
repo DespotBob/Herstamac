@@ -128,14 +128,11 @@
   </Target>
   -->
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
-
     <PropertyGroup>
       <OutputDirectory>$(SolutionDir)\Output\</OutputDirectory>
     </PropertyGroup>
     <makedir directories="$(OutputDirectory)" />
-    <Exec Command="$(SolutionDir)\tools\nuget pack $(SolutionDir)\Herstamac\Herstamac.csproj -Prop Configuration=Release -OutputDirectory $(OutputDirectory)"></Exec>
-
+    <Exec Command="$(SolutionDir)\tools\nuget pack $(SolutionDir)\Herstamac\Herstamac.csproj -Prop Configuration=Release -OutputDirectory $(OutputDirectory)">
+    </Exec>
   </Target>
-
-
 </Project>

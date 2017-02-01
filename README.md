@@ -173,7 +173,7 @@ Now we have all three things - Let's jam them into a MachineRunner, and dispatch
 
 ### Using Event Interceptors
 
-Invent Interceptors can be added to a statemachine. These are run before any event is dispatched to the statemachine.
+Invent Interceptors can be added to a statemachine. These are run before any event is dispatched to the statemachine. 
 
         SlowFastStoppedStateMachineBuilder machine = new SlowFastStoppedStateMachineBuilder();
         
@@ -203,6 +203,9 @@ Invent Interceptors can be added to a statemachine. These are run before any eve
             return new JimBobBoab();
         });
 
+**Note:** Interceptors are chained together, one executed after another - In the order they are declared in the code.
+
+**Note:** Returning null from an Interceptor stops the events from being processed by the preceding Interceptors.
 
 ### Using Default Event handlers
 
@@ -215,7 +218,7 @@ Event handlers can be added to any state:
 
 These handlers will be executed if no other event is run.
 
-<h3>Using Any Event handlers</h3>
+### Using Any Event handlers
 
 Sometimes, you might want a handler to be run, when ANY event is received by a state. 
 
@@ -228,4 +231,22 @@ These events are:
 * Are not execeuted on Entry and Exit events.
 
 **Note:** The first transition wins.
+
+### Tricks and Tips
+
+#### Implementing a workflow using - CurrentlyActionableEvents()
+
+It's relatively easy to build a workflow using a state machine to model the required behaviour, though you will find that at some point a human has to make a decision and/or give input based on the current state of the machine (or workflow)
+
+Using 
+
+	// Finding all events that will cause some kind of behaviour.
+	IEnumeration<Type> eventTypes = MachineRunner.CurrentlyActionableEvents(InternalState, MachineDefinition);
+
+will give you all the events that trigger some form of behaviour in the current state(s) of the statemachine. You can then present a selection of events to the user, and get them to fill in the details, then pass these into the State Machine.
+
+
+
+
+
 

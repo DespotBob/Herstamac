@@ -21,29 +21,11 @@ namespace Herstamac
             _currentState = currentState;   
         }
 
-        InternalState<TInternalState> IMachineState<TInternalState>.CurrentState
-        { 
-            get 
-            {
-                return _currentState;
-            } 
-        }
+        InternalState<TInternalState> IMachineState<TInternalState>.CurrentState => _currentState;
+          
+        Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> IMachineState<TInternalState>.StateHistory => _stateHistories;
 
-        Dictionary<InternalState<TInternalState>, InternalState<TInternalState>> IMachineState<TInternalState>.StateHistory 
-        {
-            get
-            {
-                return _stateHistories;
-            }
-        }
-
-        TInternalState IMachineState<TInternalState>.CurrentInternalState 
-        { 
-            get 
-            { 
-                return _currentInternalState; 
-            } 
-        }
+        TInternalState IMachineState<TInternalState>.CurrentInternalState =>  _currentInternalState; 
 
         void IMachineState<TInternalState>.ChangeState(InternalState<TInternalState> newState)
         {

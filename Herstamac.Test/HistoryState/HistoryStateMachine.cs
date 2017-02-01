@@ -7,6 +7,7 @@ namespace Herstamac.Test.HistoryState
     public class HistoryState 
     {
         public int count;
+        public int ExitCounter;
     }
 
     public class HistoryStateMachineBuilder : MachineBuilder<HistoryState>
@@ -18,8 +19,13 @@ namespace Herstamac.Test.HistoryState
 
         public State StoppedState = NewState("StoppedState");
 
-        public class TurnLeftEvent { }
-        public class StopEvent { }
+        /// <summary>
+        /// Application Specific Business Logic - We will allow any event with this interface to be able to be raised by the user.
+        /// </summary>
+        public interface UserActionable { };
+
+        public class TurnLeftEvent : UserActionable { }
+        public class StopEvent : UserActionable { }
         public class StartEvent  { }
 
         public HistoryStateMachineBuilder()
@@ -53,8 +59,16 @@ namespace Herstamac.Test.HistoryState
                 .TransitionTo(RunningState);
 
             InState(RunningState)
+                .OnAnyEvent()
+                .Then((s,e)=> {  });
+
+            InState(RunningState)
                 .When<StopEvent>()
                 .TransitionTo(StoppedState);
+
+            InState(RunningState)
+                .OnExit()
+                .Then((state, evnt) => state.ExitCounter++);
 
             InState(RunningState)
                 .OnEntry()
