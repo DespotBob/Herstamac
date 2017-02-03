@@ -22,7 +22,7 @@ A MachineBuilder is a class that is used to produce a StateMachineDefinition.
 			public State Fast = NewState("Fast");
 			public State Stopped = NewState("Stopped");
 
-			/* Events - Can be any class, and can be located anywhere, here there inside the builder - just cos.. */
+			/* Events - Can be any class, and can be located anywhere, here inside the builder - just cos.. */
 			public class GoFaster { }
 			public class GoSlower  { }
 			public class GoStop { }
@@ -144,7 +144,7 @@ Now we have all three things - Let's jam them into a MachineRunner, and dispatch
         MachineRunner.Dispatch(machineDefinition, machineState, new SlowFastStoppedStateMachineBuilder.GoFaster());
         Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefinition, machine.Stopped));
     
-<h3>Example - Log output </h3>
+### Example - Log output 
 
 	
 	SM:FastSlow - Registered state: 'Stopped', with 3 Handlers
@@ -169,9 +169,9 @@ Now we have all three things - Let's jam them into a MachineRunner, and dispatch
 	Rx'd Event2: EntryEvent
 	SM:FastSlow:827d132b-b371-4793-a1fd-df649cb34014 = State: Stopped - Entered log in the stopped state!
 
-**>Note:** A Guid has been used to identfify this statemachine in the logs, because no unique identifier was specified. If you don't like Guids, specify something else to be used in is place.</em>
+**Note:** A Guid has been used to identfify this statemachine in the logs, because no unique identifier was specified. If you don't like Guids, specify something else to be used in is place.
 
-### Using Event Interceptors
+### Using Event Interceptors.
 
 Invent Interceptors can be added to a statemachine. These are run before any event is dispatched to the statemachine. 
 
