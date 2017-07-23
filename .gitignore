@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Herstamac/bin/Debug
+/Herstamac/obj/Debug/CoreCompileInputs.cache
+/Herstamac/obj/Debug/Herstamac.csproj.FileListAbsolute.txt
+/Herstamac/obj/Debug/Herstamac.csprojResolveAssemblyReference.cache
+/Herstamac/obj/Debug/Herstamac.dll
+/Herstamac/obj/Debug/Herstamac.pdb
+/Herstamac/obj/Debug/Herstamac.dll
+/Herstamac/obj/Debug/Herstamac.csprojResolveAssemblyReference.cache

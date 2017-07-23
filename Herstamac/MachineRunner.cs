@@ -54,8 +54,8 @@ namespace Herstamac
             return Misc<TInternalState>.FindAllStates(machineDefinition.ParentStates, internalState.CurrentState)
                 .SelectMany(x => x.Handlers)
                 .Select(x => x.Key)
-                .Where(x => x != typeof(Herstamac.Events.EntryEvent))
-                .Where(x => x != typeof(Herstamac.Events.ExitEvent))
+                .Where(x => x != typeof(Events.EntryEvent))
+                .Where(x => x != typeof(Events.ExitEvent))
                 .Distinct()
                 .ToList();
         }
@@ -86,7 +86,7 @@ namespace Herstamac
 
             if (nextState != null && nextState != currentStates.Last())
             {
-                nextState = TransitionTo( (object) evnt, internalState, relations, nextState, eventInterceptors, false, config, lookup);
+                nextState = TransitionTo((object) evnt, internalState, relations, nextState, eventInterceptors, false, config, lookup);
             }
 
             if (nextState != null)
@@ -119,8 +119,8 @@ namespace Herstamac
             while (machineState.StateHistory.ContainsKey(transitionToState))
             {
                 var nextTransitionToState = machineState.StateHistory[transitionToState];
-                _nextStates.Add(nextTransitionToState);
                 transitionToState = nextTransitionToState;
+                _nextStates.Add(nextTransitionToState);
             }
 
             var entryConditionsToRun = _nextStates.Except(_currentStates);
@@ -138,7 +138,7 @@ namespace Herstamac
             machineState.ChangeState(_nextStates.Last());
 
             // Dispath entry event - transition if neccesary  and do not transition...
-            newState = DispatchToStates(new Herstamac.Events.EntryEvent(), machineState, entryConditionsToRun, eventInterceptors, config, lookup);
+            newState = DispatchToStates(new Events.EntryEvent(), machineState, entryConditionsToRun, eventInterceptors, config, lookup);
             if (newState != null)
             {
                 transitionToState = TransitionTo(evnt, machineState, relations, newState, eventInterceptors, exitInnerStatesFirst, config, lookup);
@@ -168,14 +168,17 @@ namespace Herstamac
         private static TEvent ExecuteInterceptorsForEvent<TEvent>(TEvent evnt, IEnumerable<Func<object, object>> eventInterceptors)
         {
             TEvent evntToDispatch = evnt;
+
             foreach (var interceptor in eventInterceptors)
             {
                 evntToDispatch = (TEvent)interceptor(evnt);
+
                 if (evntToDispatch == null)
                 {
                     break;
                 }
             }
+
             return evntToDispatch;
         }
 
@@ -193,23 +196,25 @@ namespace Herstamac
                 // Do not dispatch a null event!
                 return null;
             }
+
             InternalState<TInternalState> finalTransitionState = null;
+            Type eventType = evnt.GetType();
 
             foreach (var currentState in statesToDispatchTo)
             {
-                if (currentState.Handlers.ContainsKey(evnt.GetType()))
+                if (currentState.Handlers.ContainsKey(eventType))
                 {
                     finalTransitionState = Execute(evnt, internalState, config, finalTransitionState, currentState, lookup);
                 }
-                else if( evnt.GetType() != typeof(Events.EntryEvent) & evnt.GetType() != typeof( Events.ExitEvent ))
+                else if(eventType != typeof(Events.EntryEvent) & eventType != typeof(Events.ExitEvent))
                 {
                     if (currentState.Handlers.ContainsKey(typeof(Events.DefaultEvent)))
                     {
-                        finalTransitionState = Execute( new Events.DefaultEvent(), internalState, config, finalTransitionState, currentState, lookup);
+                        finalTransitionState = Execute(new Events.DefaultEvent(), internalState, config, finalTransitionState, currentState, lookup);
                     }
                 }
 
-                if (evnt.GetType() != typeof(Events.EntryEvent) & evnt.GetType() != typeof(Events.ExitEvent))
+                if (eventType != typeof(Events.EntryEvent) & eventType != typeof(Events.ExitEvent))
                 {
                     // Always run an AnyEvent() - 
                     if (currentState.Handlers.ContainsKey(typeof(Events.AnyEvent)))
@@ -217,8 +222,6 @@ namespace Herstamac
                         finalTransitionState = Execute(new Events.AnyEvent(), internalState, config, finalTransitionState, currentState, lookup);
                     }
                 }
-                // Place holder...
-                // finalTransitionState = DispatchToStateViaReflection(evnt, internalState.CurrentInternalState, currentState) ?? finalTransitionState;
             }
 
             return finalTransitionState;
@@ -240,10 +243,7 @@ namespace Herstamac
             {
                 if (action.GuardCondition(internalState.CurrentInternalState, evnt))
                 {
-                    if (action.Action != null)
-                    {
-                        action.Action(internalState.CurrentInternalState, evnt, log);
-                    }
+                    action.Action?.Invoke(internalState.CurrentInternalState, evnt, log);
 
                     if (action.TransitionTo != null)
                     {

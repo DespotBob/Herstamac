@@ -173,7 +173,7 @@ Now we have all three things - Let's jam them into a MachineRunner, and dispatch
 
 ### Using Event Interceptors.
 
-Invent Interceptors can be added to a statemachine. These are run before any event is dispatched to the statemachine. 
+Event Interceptors can be added to a statemachine. These are run before any event is dispatched to the statemachine. 
 
         SlowFastStoppedStateMachineBuilder machine = new SlowFastStoppedStateMachineBuilder();
         
