@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "Herstamac.Test/1.0.0": {
         "dependencies": {
-          "Herstamac": "1.0.0",
+          "Herstamac": "2.0.0",
           "Herstamac.Standard": "1.0.0",
           "Microsoft.NET.Test.Sdk": "17.5.0",
           "Shouldly": "4.2.1",
@@ -1084,7 +1084,7 @@
         }
       },
       "xunit.runner.visualstudio/2.4.5": {},
-      "Herstamac/1.0.0": {
+      "Herstamac/2.0.0": {
         "runtime": {
           "Herstamac.dll": {}
         }
@@ -1755,7 +1755,7 @@
       "path": "xunit.runner.visualstudio/2.4.5",
       "hashPath": "xunit.runner.visualstudio.2.4.5.nupkg.sha512"
     },
-    "Herstamac/1.0.0": {
+    "Herstamac/2.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
