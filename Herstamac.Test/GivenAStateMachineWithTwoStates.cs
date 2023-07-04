@@ -1,13 +1,13 @@
 ﻿using System;
 using Herstamac.Fluent;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Shouldly;
+using Xunit;
 
 namespace Herstamac.Test
 {
     public class SwitchUp { }
     public class SwitchDown  { }
 
-    [TestClass]
     public class GivenAStateMachineWithTwoState
     {
         MachineBuilder<OnOffInternalState> machineBuilder = new OnOffStateMachineBuilder();
@@ -19,8 +19,8 @@ namespace Herstamac.Test
         int executed = 0;
         IMachineState<OnOffInternalState> MachineState;
 
-        [TestInitialize]
-        public void Setup()
+        
+        public GivenAStateMachineWithTwoState()
         {
             Console.WriteLine("Starting...");
 
@@ -65,38 +65,38 @@ namespace Herstamac.Test
 
             MachineRunner.Start(MachineDefintion, MachineState);
 
-            Assert.IsTrue(MachineRunner.IsInState( MachineState,  MachineDefintion, On));
+            MachineRunner.IsInState( MachineState,  MachineDefintion, On).ShouldBeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenTheStateMachineIsStarted()
         {
             // Then the entry conditions of the initial state are run!
-            Assert.AreEqual(13, this.executed);
+            this.executed.ShouldBe(13);
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenTheCurrentStateIsQueried()
         {
             // Then - The first state registered is the current state.
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefintion, On));
+            MachineRunner.IsInState(MachineState, MachineDefintion, On).ShouldBeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void GivenTheMachineIsInTheOffPositionWhenItReceivesASwitchDownItTransitionsToOn ()
         {
             MachineRunner.Dispatch(MachineDefintion, MachineState, new SwitchDown());
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefintion, On));
+            MachineRunner.IsInState(MachineState, MachineDefintion, On).ShouldBeTrue();
         }
 
-        [TestMethod]
+        [Fact]
         public void WhenAStateTransitionOccursTheNewStateHasItsEntryConditionCalled()
         {
             MachineRunner.Dispatch(MachineDefintion, MachineState, new SwitchUp());
             MachineRunner.Dispatch(MachineDefintion, MachineState, new SwitchDown());
 
-            Assert.AreEqual(3, MachineState.CurrentInternalState.counter);
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefintion, On));
+            MachineState.CurrentInternalState.counter.ShouldBe(3);
+            MachineRunner.IsInState(MachineState, MachineDefintion, On).ShouldBeTrue();
         }
     }
 }

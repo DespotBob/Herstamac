@@ -1,108 +1,106 @@
 ﻿using System;
-using Herstamac.Fluent;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using static Herstamac.Test.HistoryState.HistoryStateMachineBuilder;
+using Xunit;
+using Shouldly;
 
-namespace Herstamac.Test.HistoryState
+namespace Herstamac.Test.HistoryState;
+
+public class UnitTest1
 {
-    [TestClass]
-    public class UnitTest1
+    readonly MachineDefinition<HistoryState> MachineDefinition;
+    readonly IMachineState<HistoryState> InternalState;
+    readonly HistoryStateMachineBuilder MachineBuilder;
+
+    
+    public UnitTest1()
     {
-        MachineDefinition<HistoryState> MachineDefinition;
-        IMachineState<HistoryState> InternalState;
-        HistoryStateMachineBuilder MachineBuilder;
+        MachineBuilder = new HistoryStateMachineBuilder();
+        MachineDefinition = MachineBuilder.GetMachineDefinition();
+        InternalState = MachineDefinition.NewMachineInstance(new HistoryState());
 
-        [TestInitialize]
-        public void GivenANewlyInitialisedSM()
-        {
-            MachineBuilder = new HistoryStateMachineBuilder();
-            MachineDefinition = MachineBuilder.GetMachineDefinition();
-            InternalState = MachineDefinition.NewMachineInstance(new HistoryState());
+        // Given - The Machine is started
+        MachineRunner.Start(MachineDefinition, InternalState);
+    }
 
-            // Given - The Machine is started
-            MachineRunner.Start(MachineDefinition, InternalState);
-        }
+    [Fact]
+    public void WhenStartedTheStateMachineIsInTheStoppedState()
+    {
+        // Then - the correct state is entered.
+        MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.StoppedState).ShouldBeTrue();
+    }
 
-        [TestMethod]
-        public void WhenStartedTheStateMachineIsInTheStoppedState()
-        {
-            // Then - the correct state is entered.
-            Assert.IsTrue(MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.StoppedState));
-        }
+    [Fact]
+    public void WhenTheMachineStartedAndAStartEventIsIssued()
+    {
+        // When - The machine is Started AND the start event is issued
+        MachineRunner.Dispatch(MachineDefinition, InternalState, new HistoryStateMachineBuilder.StartEvent());
 
-        [TestMethod]
-        public void WhenTheMachineStartedAndAStartEventIsIssued()
-        {
-            // When - The machine is Started AND the start event is issued
-            MachineRunner.Dispatch(MachineDefinition, InternalState, new HistoryStateMachineBuilder.StartEvent());
+        // Then - the correct state is entered.
+        MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.RunningState).ShouldBeTrue();
+        MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.SteerMiddleState).ShouldBeTrue();
+    }
 
-            // Then - the correct state is entered.
-            Assert.IsTrue(MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.RunningState));
-            Assert.IsTrue(MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.SteerMiddleState));
-        }
+    [Fact]
+    public void WhenAMachineIsInAStateWithAHistoryAndItRentersThatState()
+    {
+        GivenTheMachineIsStarted();
 
-        [TestMethod]
-        public void WhenAMachineIsInAStateWithAHistoryAndItRentersThatState()
-        {
-            GivenTheMachineIsStarted();
+        // WHEN - 
+        MachineRunner.Dispatch(MachineDefinition, InternalState, new HistoryStateMachineBuilder.TurnLeftEvent());
 
-            // WHEN - 
-            MachineRunner.Dispatch(MachineDefinition, InternalState, new HistoryStateMachineBuilder.TurnLeftEvent());
+        // THEN - 
+        MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.SteerLeftState).ShouldBeTrue();
 
-            // THEN - 
-            Assert.IsTrue(MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.SteerLeftState));
+        // WHEN - 
+        MachineRunner.Dispatch(MachineDefinition, InternalState, new HistoryStateMachineBuilder.StopEvent());
 
-            // WHEN - 
-            MachineRunner.Dispatch(MachineDefinition, InternalState, new HistoryStateMachineBuilder.StopEvent());
+        // THEN - 
+        MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.StoppedState).ShouldBeTrue();
 
-            // THEN - 
-            Assert.IsTrue(MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.StoppedState));
+        // WHEN - 
+        MachineRunner.Dispatch(MachineDefinition, InternalState, new HistoryStateMachineBuilder.StartEvent());
 
-            // WHEN - 
-            MachineRunner.Dispatch(MachineDefinition, InternalState, new HistoryStateMachineBuilder.StartEvent());
+        // THEN - 
+        MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.SteerLeftState).ShouldBeTrue();
+    }
 
-            // THEN - 
-            Assert.IsTrue(MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.SteerLeftState));
-        }
+    private void GivenTheMachineIsStarted()
+    {
+        // When - A Start event is issued
+        MachineRunner.Dispatch(MachineDefinition, InternalState, new HistoryStateMachineBuilder.StartEvent());
 
-        private void GivenTheMachineIsStarted()
-        {
-            // When - A Start event is issued
-            MachineRunner.Dispatch(MachineDefinition, InternalState, new HistoryStateMachineBuilder.StartEvent());
+        // THEN - 
+        MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.RunningState).ShouldBeTrue();
+        MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.SteerMiddleState).ShouldBeTrue();
+    }
 
-            // THEN - 
-            Assert.IsTrue(MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.RunningState));
-            Assert.IsTrue(MachineRunner.IsInState(InternalState, MachineDefinition, MachineBuilder.SteerMiddleState));
-        }
+    [Fact]
+    public void WhenACallersAsksForAllPossibleEventsThatCouldCauseStateToChange()
+    {
+        GivenTheMachineIsStarted();
 
-        [TestMethod]
-        public void WhenACallersAsksForAllPossibleEventsThatCouldCauseStateToChange()
-        {
-            GivenTheMachineIsStarted();
+        // When - A called request all the events that can trigger some from of action.
+        var eventTypes = MachineRunner.CurrentlyActionableEvents(InternalState, MachineDefinition);
 
-            // When - A called request all the events that can trigger some from of action.
-            var eventTypes = MachineRunner.CurrentlyActionableEvents(InternalState, MachineDefinition);
+        // Then - The expected types of the events are returned...
+        eventTypes.ShouldContain(typeof(TurnLeftEvent));
+        eventTypes.ShouldContain(typeof(StopEvent));
+        eventTypes.ShouldContain(typeof(Events.AnyEvent));
 
-            // Then - The expected types of the events are returned...
-            Assert.IsTrue(eventTypes.Contains(typeof(TurnLeftEvent)));
-            Assert.IsTrue(eventTypes.Contains(typeof(StopEvent)));
-            Assert.IsTrue(eventTypes.Contains(typeof(Events.AnyEvent)));
+        // Then - we do not expected these events to be returned.
+        eventTypes.ShouldNotContain(typeof(Events.EntryEvent));
+        eventTypes.ShouldNotContain(typeof(Events.ExitEvent));
 
-            // Then - we do not expected these events to be returned.
-            Assert.IsFalse(eventTypes.Contains(typeof(Events.EntryEvent)));
-            Assert.IsFalse(eventTypes.Contains(typeof(Events.ExitEvent)));
+        eventTypes.Count().ShouldBe(3);
+    }
 
-            Assert.AreEqual(3, eventTypes.Count());
-        }
+    [Fact]
+    public void TestingSmallBitsOftheBusinessLogic()
+    {
+        GivenTheMachineIsStarted();
 
-        [TestMethod]
-        public void TestingSmallBitsOftheBusinessLogic()
-        {
-            GivenTheMachineIsStarted();
-
-            Assert.IsFalse(typeof(HistoryStateMachineBuilder.UserActionable).IsAssignableFrom(typeof(HistoryStateMachineBuilder.StartEvent)));
-            Assert.IsTrue(typeof(HistoryStateMachineBuilder.UserActionable).IsAssignableFrom(typeof(HistoryStateMachineBuilder.StopEvent)));
-        }
+        typeof(UserActionable).IsAssignableFrom(typeof(StartEvent)).ShouldBeFalse();
+        typeof(UserActionable).IsAssignableFrom(typeof(StopEvent)).ShouldBeTrue();
     }
 }

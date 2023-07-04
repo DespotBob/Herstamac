@@ -1,114 +1,114 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿//using System;
 
-namespace Herstamac.Test
-{
-    public class SwitchUp : Event { }
-    public class SwitchDown : Event { }
 
-    [TestClass]
-    public class GivenAStateMachineWithTwoState
-    {
-        OnOffStateMachine machine = new OnOffStateMachine();
+//namespace Herstamac.Test
+//{
+//    public class SwitchUp : Event { }
+//    public class SwitchDown : Event { }
 
-        UnitTestState On = new UnitTestState("On");
-        UnitTestState Off = new UnitTestState("Off");
+   
+//    public class GivenAStateMachineWithTwoState
+//    {
+//        OnOffStateMachine machine = new OnOffStateMachine();
 
-        int executed = 0;
+//        UnitTestState On = new UnitTestState("On");
+//        UnitTestState Off = new UnitTestState("Off");
 
-        [TestInitialize]
-        public void Setup()
-        {
-            Console.WriteLine("Starting...");
+//        int executed = 0;
 
-            machine.RegisterState(On);
-            machine.RegisterState(Off);
+//        [TestInitialize]
+//        public void Setup()
+//        {
+//            Console.WriteLine("Starting...");
 
-            machine.InState(On)
-                .OnEntry()
-                .Then((s, e) => this.executed = 13);
+//            machine.RegisterState(On);
+//            machine.RegisterState(Off);
 
-            machine.InState(On)
-                .When<SwitchUp>()
-                .Then((state, evnt) =>
-                {
-                    state.counter += 3;
-                    Console.WriteLine("Rx'd Switchup!");
-                });
+//            machine.InState(On)
+//                .OnEntry()
+//                .Then((s, e) => this.executed = 13);
 
-            machine.InState(On)
-                .When<SwitchUp>()
-                .WithGuard((state,x) => true)
-                .Then((state,x) => Console.WriteLine("Rx'd Switchup! - with a Guard Condition"));
+//            machine.InState(On)
+//                .When<SwitchUp>()
+//                .Then((state, evnt) =>
+//                {
+//                    state.counter += 3;
+//                    Console.WriteLine("Rx'd Switchup!");
+//                });
 
-            machine.InState(On)
-                .When<SwitchUp>()
-                .WithGuard( (state,x) => true)
-                .Then()
-                .TransitionTo(Off);
+//            machine.InState(On)
+//                .When<SwitchUp>()
+//                .WithGuard((state,x) => true)
+//                .Then((state,x) => Console.WriteLine("Rx'd Switchup! - with a Guard Condition"));
 
-            machine.InState(Off)
-                .When<SwitchDown>()
-                .TransitionTo(On);
+//            machine.InState(On)
+//                .When<SwitchUp>()
+//                .WithGuard( (state,x) => true)
+//                .Then()
+//                .TransitionTo(Off);
 
-            machine.Start();
+//            machine.InState(Off)
+//                .When<SwitchDown>()
+//                .TransitionTo(On);
 
-            Assert.IsTrue(machine.IsInState(On));
-        }
+//            machine.Start();
 
-        [TestMethod]
-        public void WhenTheStateMachineIsStarted()
-        {
-            machine.Start();
+//            Assert.IsTrue(machine.IsInState(On));
+//        }
 
-            // Then the entry conditions of the initial state are run!
-            Assert.AreEqual(13, this.executed);
-        }
+//        [TestMethod]
+//        public void WhenTheStateMachineIsStarted()
+//        {
+//            machine.Start();
 
-        [TestMethod]
-        public void WhenTheCurrentStateIsQueried()
-        {
-            // Then - The first state registered is the current state.
-            Assert.AreEqual(On, machine.CurrentState);
-        }
+//            // Then the entry conditions of the initial state are run!
+//            Assert.AreEqual(13, this.executed);
+//        }
 
-        [TestMethod]
-        public void GivenTheMachineIsInTheOffPositionWhenItReceivesASwitchDownItTransitionsToOn ()
-        {
-            machine.Handle(new SwitchDown());
-            Assert.AreEqual(On, machine.CurrentState);
-        }
+//        [TestMethod]
+//        public void WhenTheCurrentStateIsQueried()
+//        {
+//            // Then - The first state registered is the current state.
+//            Assert.AreEqual(On, machine.CurrentState);
+//        }
 
-        [TestMethod]
-        public void WhenAStateTransitionOccursTheOldStateHasItsExitConditionCalled()
-        {
-            int x = 0;
+//        [TestMethod]
+//        public void GivenTheMachineIsInTheOffPositionWhenItReceivesASwitchDownItTransitionsToOn ()
+//        {
+//            machine.Handle(new SwitchDown());
+//            Assert.AreEqual(On, machine.CurrentState);
+//        }
 
-            Off.ExitEventHandler = (evnt, state) => { 
-                x++;
-                return Herstamac.EventHandledResponse<OnOffInternalState>.Nothing; 
-            };
+//        [TestMethod]
+//        public void WhenAStateTransitionOccursTheOldStateHasItsExitConditionCalled()
+//        {
+//            int x = 0;
 
-            // Given 
-            machine.Handle(new SwitchUp());
-            Assert.AreEqual(Off, machine.CurrentState);
+//            Off.ExitEventHandler = (evnt, state) => { 
+//                x++;
+//                return Herstamac.EventHandledResponse<OnOffInternalState>.Nothing; 
+//            };
 
-            // When
-            machine.Handle(new SwitchDown());
+//            // Given 
+//            machine.Handle(new SwitchUp());
+//            Assert.AreEqual(Off, machine.CurrentState);
 
-            // Then 
-            Assert.AreEqual(On, machine.CurrentState);
-            Assert.AreEqual(1, x);
-        }
+//            // When
+//            machine.Handle(new SwitchDown());
 
-        [TestMethod]
-        public void WhenAStateTransitionOccursTheNewStateHasItsEntryConditionCalled()
-        {
-            machine.Handle(new SwitchUp());
-            machine.Handle(new SwitchDown());
+//            // Then 
+//            Assert.AreEqual(On, machine.CurrentState);
+//            Assert.AreEqual(1, x);
+//        }
 
-            Assert.AreEqual(3, machine._state.CurrentInternalState.counter);
-            Assert.IsTrue(machine.IsInState(On));
-        }
-    }
-}
+//        [TestMethod]
+//        public void WhenAStateTransitionOccursTheNewStateHasItsEntryConditionCalled()
+//        {
+//            machine.Handle(new SwitchUp());
+//            machine.Handle(new SwitchDown());
+
+//            Assert.AreEqual(3, machine._state.CurrentInternalState.counter);
+//            Assert.IsTrue(machine.IsInState(On));
+//        }
+//    }
+//}

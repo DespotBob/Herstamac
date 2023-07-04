@@ -1,49 +1,47 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Shouldly;
+using Xunit;
 
-namespace Herstamac.Test.MultipleEvents
+namespace Herstamac.Test.MultipleEvents;
+
+public class MultipleEventsTests
 {
-    [TestClass]
-    public class MultipleEventsTests
+    readonly MachineDefinition<MultipleEventsMachineState> MachineDefinition;
+    readonly IMachineState<MultipleEventsMachineState> MachineState;
+    readonly MultipleEventsStateMachine MachineBuilder;
+
+    public MultipleEventsTests()
     {
-        MachineDefinition<MultipleEventsMachineState> MachineDefinition;
-        IMachineState<MultipleEventsMachineState> MachineState;
-        MultipleEventsStateMachine MachineBuilder;
-
-        [TestInitialize]
-        public void Init()
+        MachineBuilder = new MultipleEventsStateMachine();
+        MachineDefinition = MachineBuilder.GetMachineDefinition(config =>
         {
-            MachineBuilder = new MultipleEventsStateMachine();
-            MachineDefinition = MachineBuilder.GetMachineDefinition(config =>
-            {
-                config.Name("MultipleEventsTest");
-                config.Logger(x => Console.WriteLine(x));
-                config.LogEventWith(x => x.ToString());
-                config.UniqueId.FromProperty(p => p.Id);
-            });
-            MachineState = MachineDefinition.NewMachineInstance(new MultipleEventsMachineState());
+            config.Name("MultipleEventsTest");
+            config.Logger(x => Console.WriteLine(x));
+            config.LogEventWith(x => x.ToString());
+            config.UniqueId.FromProperty(p => p.Id);
+        });
+        MachineState = MachineDefinition.NewMachineInstance(new MultipleEventsMachineState());
 
-            MachineRunner.Start(MachineDefinition, MachineState);
-        }
+        MachineRunner.Start(MachineDefinition, MachineState);
+    }
 
-        [TestMethod]
-        public void InitialConditionsAreCorrect()
-        {
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Sane));
-        }
+    [Fact]
+    public void InitialConditionsAreCorrect()
+    {
+        MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Sane).ShouldBeTrue();
+    }
 
-        [TestMethod]
-        public void TransistionsOnOneTypeOfMessages()
-        {
-            MachineRunner.Dispatch(MachineDefinition, MachineState, new MultipleEventsStateMachine.TelephoneCall());
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Insane));
-        }
-
-        [TestMethod]
-        public void TransistionsOnTheOtherTypeOfMessages()
-        {
-            MachineRunner.Dispatch(MachineDefinition, MachineState, new MultipleEventsStateMachine.EmailMessage());
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Insane));
-        }
+    [Fact]
+    public void TransistionsOnOneTypeOfMessages()
+    {
+        MachineRunner.Dispatch(MachineDefinition, MachineState, new MultipleEventsStateMachine.TelephoneCall());
+        MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Insane).ShouldBeTrue();
+    }
+    
+    [Fact]      
+    public void TransistionsOnTheOtherTypeOfMessages()
+    {
+        MachineRunner.Dispatch(MachineDefinition, MachineState, new MultipleEventsStateMachine.EmailMessage());
+        MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Insane).ShouldBeTrue();
     }
 }

@@ -1,57 +1,55 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Shouldly;
+using Xunit;
 
-namespace Herstamac.Test.DefaultHandlers
+namespace Herstamac.Test.DefaultHandlers;
+
+public class AnyEventHandlersTests
 {
-    [TestClass]
-    public class AnyEventHandlersTests
+    readonly MachineDefinition<AnyHandlerState> MachineDefinition;
+    readonly IMachineState<AnyHandlerState> MachineState;
+    readonly AnyHandlerBuilder MachineBuilder = new();
+
+    public AnyEventHandlersTests()
     {
-        MachineDefinition<AnyHandlerState> MachineDefinition;
-        IMachineState<AnyHandlerState> MachineState;
-        AnyHandlerBuilder MachineBuilder = new AnyHandlerBuilder();
-
-        [TestInitialize]
-        public void Init()
+        MachineDefinition = MachineBuilder.GetMachineDefinition(config =>
         {
-            MachineDefinition = MachineBuilder.GetMachineDefinition(config =>
-            {
-                config.Name("AnyHandler");
-                config.Logger(x => Console.WriteLine(x));
-                config.LogEventWith(x => x.ToString());
-                config.UniqueId.FromProperty(p => p.Id);
-            });
-            MachineState = MachineDefinition.NewMachineInstance(new AnyHandlerState());
+            config.Name("AnyHandler");
+            config.Logger(x => Console.WriteLine(x));
+            config.LogEventWith(x => x?.ToString() ?? string.Empty);
+            config.UniqueId.FromProperty(p => p.Id);
+        });
+        MachineState = MachineDefinition.NewMachineInstance(new AnyHandlerState());
 
-            MachineRunner.Start(MachineDefinition, MachineState);
-        }
+        MachineRunner.Start(MachineDefinition, MachineState);
+    }
 
-        [TestMethod]
-        public void InitialConditionsAreCorrect()
-        {
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Outer));
-            Assert.IsFalse(MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Inner));
-        }
+    [Fact]
+    public void InitialConditionsAreCorrect()
+    {
+        MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Outer).ShouldBeTrue();
+        MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Inner).ShouldBeFalse();
+    }
 
-        [TestMethod]
-        public void MachineTransitionsToInnerStateAndRunsHandler()
-        {
-            MachineRunner.Dispatch(MachineDefinition, MachineState, new AnyHandlerBuilder.GoFaster() );
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Inner));
-        }
+    [Fact]
+    public void MachineTransitionsToInnerStateAndRunsHandler()
+    {
+        MachineRunner.Dispatch(MachineDefinition, MachineState, new AnyHandlerBuilder.GoFaster());
+        MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Inner).ShouldBeTrue();
+    }
 
-        [TestMethod]
-        public void DefaultHandlersAreRun()
-        {
-            // When - GoFaster is encountered.
-            MachineRunner.Dispatch(MachineDefinition, MachineState, new AnyHandlerBuilder.GoFaster());
+    [Fact]
+    public void DefaultHandlersAreRun()
+    {
+        // When - GoFaster is encountered.
+        MachineRunner.Dispatch(MachineDefinition, MachineState, new AnyHandlerBuilder.GoFaster());
 
-            // Then - the AnyEvent handler on the outer state are executed.
-            // Then - the entry events on the Inner state do not cause the AnyEvent() handlers to be executed.
-            Assert.AreEqual(1, MachineState.CurrentInternalState.Counter1);
-            Assert.AreEqual(0, MachineState.CurrentInternalState.Counter2);
+        // Then - the AnyEvent handler on the outer state are executed.
+        // Then - the entry events on the Inner state do not cause the AnyEvent() handlers to be executed.
+        MachineState.CurrentInternalState.Counter1.ShouldBe(1);
+        MachineState.CurrentInternalState.Counter2.ShouldBe(0);
 
-            // Then - GoFaster has caused a transition to Inner state...
-            Assert.IsTrue(MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Inner));
-        }
+        // Then - GoFaster has caused a transition to Inner state...
+        MachineRunner.IsInState(MachineState, MachineDefinition, MachineBuilder.Inner).ShouldBeTrue();
     }
 }

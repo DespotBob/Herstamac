@@ -1,18 +1,16 @@
 ﻿using System;
 using Herstamac.Test.MultipleEvents;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Herstamac.Test
 {
-	[TestClass]
 	public class ConfigurationTests
 	{
-        MachineDefinition<MultipleEventsMachineState> MachineDefinition;
-        IMachineState<MultipleEventsMachineState> MachineState;
-        MultipleEventsStateMachine MachineBuilder;
+        readonly MachineDefinition<MultipleEventsMachineState> MachineDefinition;
+        readonly IMachineState<MultipleEventsMachineState> MachineState;
+        readonly MultipleEventsStateMachine MachineBuilder;
 
-        [TestInitialize]
-        public void Init()
+        public ConfigurationTests()
         {
             MachineBuilder = new MultipleEventsStateMachine();
 
@@ -25,6 +23,12 @@ namespace Herstamac.Test
 
             MachineState = MachineDefinition.NewMachineInstance(new MultipleEventsMachineState());
 
+
+        }
+
+        [Fact]
+        public void Start()
+        {
             MachineRunner.Start(MachineDefinition, MachineState);
         }
     }

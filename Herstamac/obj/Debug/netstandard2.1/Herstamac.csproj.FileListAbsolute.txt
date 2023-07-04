@@ -1,0 +1,10 @@
+F:\Code\Herstamac\Herstamac\bin\Debug\netstandard2.1\Herstamac.deps.json
+F:\Code\Herstamac\Herstamac\bin\Debug\netstandard2.1\Herstamac.dll
+F:\Code\Herstamac\Herstamac\bin\Debug\netstandard2.1\Herstamac.pdb
+F:\Code\Herstamac\Herstamac\obj\Debug\netstandard2.1\Herstamac.csproj.AssemblyReference.cache
+F:\Code\Herstamac\Herstamac\obj\Debug\netstandard2.1\Herstamac.GeneratedMSBuildEditorConfig.editorconfig
+F:\Code\Herstamac\Herstamac\obj\Debug\netstandard2.1\Herstamac.AssemblyInfoInputs.cache
+F:\Code\Herstamac\Herstamac\obj\Debug\netstandard2.1\Herstamac.AssemblyInfo.cs
+F:\Code\Herstamac\Herstamac\obj\Debug\netstandard2.1\Herstamac.csproj.CoreCompileInputs.cache
+F:\Code\Herstamac\Herstamac\obj\Debug\netstandard2.1\Herstamac.dll
+F:\Code\Herstamac\Herstamac\obj\Debug\netstandard2.1\Herstamac.pdb

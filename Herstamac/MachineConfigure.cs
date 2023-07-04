@@ -5,7 +5,7 @@ namespace Herstamac
 {
     public class MachineConfigure<TInternalState> : IMachineConfigure<TInternalState>, IUniqueIdConfigure<TInternalState>
     {
-        MachineConfiguration<TInternalState> config = new MachineConfiguration<TInternalState>();
+        readonly MachineConfiguration<TInternalState> config = new MachineConfiguration<TInternalState>();
 
         public MachineConfiguration<TInternalState> Results
         {

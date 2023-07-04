@@ -236,8 +236,7 @@ namespace Herstamac
         {
             var handler = currentState.Handlers[evnt.GetType()];
 
-            Action<string> log =
-                str => config.Logger($"SM:{config.Name}:{config.GetUniqueId(internalState.CurrentInternalState)} = State: {currentState.Name} - {str}");
+            void log(string str) => config.Logger($"SM:{config.Name}:{config.GetUniqueId(internalState.CurrentInternalState)} = State: {currentState.Name} - {str}");
 
             foreach (var action in handler.TransistionDefinitions)
             {
@@ -247,7 +246,7 @@ namespace Herstamac
 
                     if (action.TransitionTo != null)
                     {
-                        finalTransitionState = finalTransitionState ?? lookup( action.TransitionTo );
+                        finalTransitionState ??= lookup( action.TransitionTo );
                     }
                 }
             }

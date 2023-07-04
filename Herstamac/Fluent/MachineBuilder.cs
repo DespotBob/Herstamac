@@ -6,13 +6,13 @@ namespace Herstamac.Fluent
 { 
     public class MachineBuilder<TInternalState>
     {
-        private IState _currentState = null;
+        private IState? _currentState = null;
 
-        private Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>> _stateHistory { get; } = new Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>>();
+        private Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>> StateHistory { get; } = new Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>>();
 
-        private List<BuilderState<TInternalState>> RegisteredStates = new List<BuilderState<TInternalState>>();
+        private readonly List<BuilderState<TInternalState>> RegisteredStates = new List<BuilderState<TInternalState>>();
 
-        private Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>> ParentStates 
+        private readonly Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>> ParentStates 
             = new Dictionary<BuilderState<TInternalState>, BuilderState<TInternalState>>();
 
         private readonly List<Func<object, object>> EventInterceptors;
@@ -100,7 +100,7 @@ namespace Herstamac.Fluent
                 throw new ArgumentOutOfRangeException("initialState", "The initialState state cannot be the same as the historyState state when registering a history start!");
             }
 
-            _stateHistory.Add( Lookup( historyState), Lookup(initialState));
+            StateHistory.Add( Lookup( historyState), Lookup(initialState));
         }
 
         public void AddEventInterceptor(Func<object, object> interceptor)
@@ -123,7 +123,7 @@ namespace Herstamac.Fluent
                 , EventInterceptors
                 , new MachineConfiguration<TInternalState>()
                 , _currentState
-                , _stateHistory );
+                , StateHistory );
         }
 
         public MachineDefinition<TInternalState> GetMachineDefinition(Action<IMachineConfigure<TInternalState>> configure)
@@ -140,7 +140,7 @@ namespace Herstamac.Fluent
                 , EventInterceptors
                 , config.Results
                 , _currentState
-                , _stateHistory);
+                , StateHistory);
         }
 
         public static State NewState(string name)

@@ -10,7 +10,7 @@ namespace Herstamac.Fluent
     {
         public class ListOfHandlers
         {
-            public List<BuilderTransitionDefinition<TInternalState>> TransistionDefinitions = new List<BuilderTransitionDefinition<TInternalState>>();
+            public List<BuilderTransitionDefinition<TInternalState>> TransistionDefinitions = new();
         }
 
         public BuilderState(string name)

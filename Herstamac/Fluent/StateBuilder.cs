@@ -4,7 +4,7 @@ namespace Herstamac.Fluent
 {
     public class StateBuilder<TInternalState> 
     {
-        private BuilderState<TInternalState> _state;
+        private readonly BuilderState<TInternalState> _state;
         private readonly Func<State, BuilderState<TInternalState>> _lookup;
 
         public StateBuilder(BuilderState<TInternalState> state, Func<State, BuilderState<TInternalState>> lookup)
